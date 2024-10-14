@@ -4,7 +4,8 @@ const connection = mysql.createConnection({
     host: 'electronic-shit.cvmgomkwany6.ap-northeast-2.rds.amazonaws.com',
     user: 'root',
     password: 'codecrew285',
-    database: 'electronicshit'
+    database: 'electronicshit',
+
 });
 
 connection.connect((err, handshake) => {

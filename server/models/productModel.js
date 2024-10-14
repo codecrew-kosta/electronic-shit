@@ -5,33 +5,35 @@
  */
 
 //mysql 디비연동 커넷션풀
-const mysqlDBConnection = require('./config/mysqlDB'); // 20241014_남윤호 상품관련 디비 연동
+const connection = require('../config/mysqlDB'); // 20241014_남윤호 상품관련 디비 연동
+const express = require('express');
+const router = express.Router();
 
 
-const QUERY_CREATE = 'SELECT * FROM PRODUCTSINFO';
-const QUERY = 'INSERT INTO users (name, email, password) VALUES (?,?,?)';
-const QUERY_FINDALL = 'SELECT * FROM PRODUCTSINFO';
-const QUERY_FINDBYID = 'SELECT * FROM PRODUCTSINFO BY ';
-const QUERY_UPDATEBYID = 'SELECT * FROM PRODUCTSINFO';
-const QUERY_DELETEBYID = 'SELECT * FROM PRODUCTSINFO';
-
-
-const QUERY_SELECT = 'SELECT * FROM USERS ORDER BY ID DESC';
-const QUERY_UPDATE = 'UPDATE USERS SET NAME=?, EMAIL=?, PASSWORD=? WHERE ID=?;';
-const QUERY_INSERT = 'INSERT INTO users (name, email, password) VALUES (?,?,?)';
-const QUERY_DELETE = 'DELETE FROM USERS WHERE ID=?'
+const QUERY_SELECT = 'SELECT * FROM PRODUCTSINFO';
+const QUERY_UPDATE = 'UPDATE PRODUCTSINFO SET category=?, name=?, brand=?, releasedDate=?, price=?,photo=?,salesStatus=?,stocks=?,dateAdded=?,dateModified=?,userNo=?,userId=? WHERE ID=?;';
+const QUERY_INSERT = 'INSERT INTO PRODUCTSINFO (category, name,brand,releasedDate,price,photo,salesStatus,stocks,dateAdded,dateModified,userNo,userId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+const QUERY_DELETE = 'DELETE FROM PRODUCTSINFO WHERE ID=?'
 
 
 // 여기서 넘어온 객체가지고 각종 연산처리
 const productDAO = {
-    findAll: async () => {
-        try {
-            return await Car.find()
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    },
+    findAll:
+        // users 전체 목록 불러오기
+        router.route('/').get((req, res) => {
+            console.log("들어오니?");
+
+            function callback(err, results) {
+                if (err) return res.status(500).json({ error: err });
+                res.send(results);
+            };
+            if (connection) {
+                connection.query(QUERY_SELECT, callback);
+            } else {
+                console.log('DB 연결 안됨!');
+            }
+        })
+    ,
     findById: async (id) => {
         try {
             return await Car.find({ _id: mongoose.Types.ObjectId(id) })
