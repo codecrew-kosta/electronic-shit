@@ -4,48 +4,72 @@
  * 디비를 조회해서 실질저인 CRUD작업을 처리하는 곳이다.
  */
 
-//테스트 위해서 임시로 설정 디비로 바꿔서 작업해야됨
-let productList = [
-    { id: 1, title: "밥먹기" },
-    { id: 2, title: "간식먹기" },
-]
+//mysql 디비연동 커넷션풀
+const mysqlDBConnection = require('./config/mysqlDB'); // 20241014_남윤호 상품관련 디비 연동
 
-let autoId = 3;
+
+const QUERY_CREATE = 'SELECT * FROM PRODUCTSINFO';
+const QUERY = 'INSERT INTO users (name, email, password) VALUES (?,?,?)';
+const QUERY_FINDALL = 'SELECT * FROM PRODUCTSINFO';
+const QUERY_FINDBYID = 'SELECT * FROM PRODUCTSINFO BY ';
+const QUERY_UPDATEBYID = 'SELECT * FROM PRODUCTSINFO';
+const QUERY_DELETEBYID = 'SELECT * FROM PRODUCTSINFO';
+
+
+const QUERY_SELECT = 'SELECT * FROM USERS ORDER BY ID DESC';
+const QUERY_UPDATE = 'UPDATE USERS SET NAME=?, EMAIL=?, PASSWORD=? WHERE ID=?;';
+const QUERY_INSERT = 'INSERT INTO users (name, email, password) VALUES (?,?,?)';
+const QUERY_DELETE = 'DELETE FROM USERS WHERE ID=?'
 
 
 // 여기서 넘어온 객체가지고 각종 연산처리
 const productDAO = {
-    findAll: () => {
-        return [...productList];
+    findAll: async () => {
+        try {
+            return await Car.find()
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     },
-    findById: (id) => {
-        return productList.filter((todo) => {
-            return Number(todo.id) === Number(id)
-        })
+    findById: async (id) => {
+        try {
+            return await Car.find({ _id: mongoose.Types.ObjectId(id) })
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     },
-    create: (obj) => {
-        const newObj = { ...obj, id: autoId }; // 새 객체 생성
-        productList.push(newObj);
-        ++autoId;
-        return "todo 생성되었음";
+    create: async (obj) => {
+        try {
+            // Mongoose 모델의 인스턴스 생성
+            const newObj = new Car({ ...obj, num: autoId });
+            await newObj.save();
+            ++autoId;
+            return "car 생성되었음";
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     },
-    update: (obj) => {
-        //map은 각 요소를 순회하며 새로운 배열을 반환한다. 조건에 따라 업데이트할 객체를 반환하고,
-        //그렇지 않다면 원본객체를 그래로 반환한다
-        //구조분해할당을 아래와 같이 쓰면 item의 속성을 유지하면서 덮어쓸수 있다고한다.
-        productList = productList.map((item) => {
-            return Number(item.id) === Number(obj.id) ? { ...item, ...obj } : item
-        })
-        return "todo 수정되었음"
+    update: async (obj) => {
+        try {
+            await Car.updateOne({ _id: mongoose.Types.ObjectId(obj.id) }, { $set: obj })
+            return "car 수정되었음";
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     },
-    delete: (id) => {
-        //특정 요소를 삭제하는 거니까 map이 아닌 filter가 좋다.
-        productList = productList.filter((item) => {
-            return Number(item.id) !== Number(id);
-        });
-        return "todo 삭제되었음"
+    delete: async (id) => {
+        try {
+            await Car.deleteOne({ _id: mongoose.Types.ObjectId(id) });
+            return "car 삭제되었음"
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
-
 }
 
 

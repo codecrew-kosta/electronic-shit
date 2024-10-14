@@ -1,6 +1,7 @@
 /**
  * 2024_10_14_남윤호 product CRUD 작업중_ Product 라우터추가
  * productRouter
+ * mysqlDBConnection
  */
 
 const express = require('express');
@@ -9,6 +10,8 @@ const cors = require('cors');
 
 const app = express();
 const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
+
+
 const server = http.createServer(app);
 
 app.set('port', 3001);
