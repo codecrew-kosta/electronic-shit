@@ -1,31 +1,56 @@
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
+const db = require('./db');
 
 const app = express();
 const server = http.createServer(app);
 
 app.set('port', 3001);
+app.use(db);
 
 app.use(cors());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.send 쓰지 말 것.
 
+
+/* 남윤호 구현 기능 시작 */
+/* 이곳에 남윤호가 구현한 기능을 넣는다 */
+
+/* 남윤호 구현 기능 끝 */
+
+
+
+/* 조영우 구현 기능 시작 */
+/* 이곳에 조영우가 구현한 기능을 넣는다 */
+app.get("/register", (req, res) => {
+
+})
+/* 조영우 구현 기능 끝 */
+
+
+
+/* 한채경 구현 기능 시작 */
+/* 이곳에 한채경이 구현한 기능을 넣는다 */
+
+/* 한채경 구현 기능 끝 */
+
+
 app.get('/', (req, res) => {
-    try{
+    try {
         res.status(200).json({
             status: 200,
             message: 'hello world',
         });
         console.log('200 ok');
-    } catch(error) {
+    } catch (error) {
         res.status(500).json({
             status: 500,
             message: `${error}`,
         });
         console.error('500 error: ', error);
     }
-    
+
 })
 
 server.listen(app.get(`port`), () => {

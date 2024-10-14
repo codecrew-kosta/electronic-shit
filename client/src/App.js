@@ -14,7 +14,7 @@ import Products from './components/home/Products';
 import ProductDetail from './components/products/ProductDetail';
 import RelatedProducts from './components/products/RelatedProducts';
 import Login from './components/login/Login';
-import './App.css';
+// import './App.css';
 
 function App() {
   return (<>
