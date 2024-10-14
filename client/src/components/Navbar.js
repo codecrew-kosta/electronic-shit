@@ -30,8 +30,8 @@ function Navbar() {
             </button>
           </form>
           <button className=" btn btn-outline-dark" type="submit">
-          <i className="bi-cart-fill"></i>Sign In / Up
-            </button>
+            <i className="bi-cart-fill"></i>Sign In / Up
+          </button>
         </div>
       </div>
     </nav>

@@ -1,9 +1,15 @@
+/**
+ * 2024_10_14_남윤호 product CRUD 작업중_ Product 라우터추가
+ * productRouter
+ */
+
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const db = require('./db');
 
 const app = express();
+const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
 const server = http.createServer(app);
 
 app.set('port', 3001);
@@ -16,16 +22,14 @@ app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.s
 
 /* 남윤호 구현 기능 시작 */
 /* 이곳에 남윤호가 구현한 기능을 넣는다 */
-
+app.use('/product', productRouter);
 /* 남윤호 구현 기능 끝 */
 
 
 
 /* 조영우 구현 기능 시작 */
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
-app.get("/register", (req, res) => {
 
-})
 /* 조영우 구현 기능 끝 */
 
 
@@ -34,6 +38,7 @@ app.get("/register", (req, res) => {
 /* 이곳에 한채경이 구현한 기능을 넣는다 */
 
 /* 한채경 구현 기능 끝 */
+
 
 
 app.get('/', (req, res) => {
