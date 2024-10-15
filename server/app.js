@@ -10,6 +10,7 @@ const db = require('./db');
 
 const app = express();
 const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
+const loginRouter = require("./router/Login");//20241014_조영우 로그인 및 회원가입 관련 라우터
 const server = http.createServer(app);
 
 app.set('port', 3001);
@@ -29,7 +30,7 @@ app.use('/product', productRouter);
 
 /* 조영우 구현 기능 시작 */
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
-
+app.use('/login', loginRouter);
 /* 조영우 구현 기능 끝 */
 
 
