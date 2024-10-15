@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login, getProtectedData } from './services/authService'; // authService.js 가져오기
+import { login, getProtectedData } from '../../services/authService'; // authService.js 가져오기
 
 
 function LoginForm() {
@@ -10,6 +10,7 @@ function LoginForm() {
 
   const handleLoginClick = async () => {
     try {
+      let username = "";
       const { accessToken, csrfToken } = await login(username, password);
       setAccessToken(accessToken);
       setCsrfToken(csrfToken);
