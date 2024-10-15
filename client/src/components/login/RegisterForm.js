@@ -9,6 +9,11 @@ function RegisterForm() {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [email, setEmail] = useState(null);
 
+  //2024_10_15_남윤호: 오류땜시 임시 생성
+  const [getData, setData] = useState(null);
+  const [getLoading, setLoading] = useState(null);
+  const [getError, setError] = useState(null);
+
   useEffect(() => {
     // 비동기 함수 정의
     const fetchData = async () => {
