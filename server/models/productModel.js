@@ -1,5 +1,5 @@
 /**
- * 2024_10_14_남윤호 product CRUD 작업중_ productDAO
+ * 2024_10_15_남윤호 product CRUD 작업완료
  * 
  * 디비를 조회해서 실질적인 CRUD작업을 처리하는 곳이다.
  */
@@ -19,20 +19,20 @@ const QUERY_DELETE = 'delete from productsinfo where productNo=?'
 const productDAO = {
     findAll: async () => {
         try {
-            const [results] = await db.execute(QUERY_SELECT_All); // 풀에서 쿼리 실행
-            return results; // 결과 반환
+            const [results] = await db.execute(QUERY_SELECT_All);
+            return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
-            throw err; // 에러 발생 시 throw
+            throw err;
         }
     },
     findById: async (id) => {
         try {
-            const [results] = await db.execute(QUERY_SELECT_ONE, [id]); // 풀에서 쿼리 실행
-            return results; // 결과 반환
+            const [results] = await db.execute(QUERY_SELECT_ONE, [id]);
+            return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
-            throw err; // 에러 발생 시 throw
+            throw err;
         }
     },
     create: async (obj) => {
@@ -42,22 +42,22 @@ const productDAO = {
                 category,
                 name,
                 brand,
-                releasedDate,  // undefined인 경우 null로 기본값 설정
+                releasedDate,
                 price,
-                photo,  // 같은 처리
+                photo,
                 salesStatus,
                 stocks,
-                // dateAdded,  // 같은 처리
-                // dateModified,  // 같은 처리
-                userNo,  // 같은 처리
-                userId  // 같은 처리
+                // dateAdded,  
+                // dateModified, 
+                userNo,
+                userId
             } = obj;
 
             const [results] = await db.execute(QUERY_CREATE, [category, name, brand, releasedDate, price, photo, salesStatus, stocks, userNo, userId]); // 풀에서 쿼리 실행
-            return results; // 결과 반환
+            return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
-            throw err; // 에러 발생 시 throw
+            throw err;
         }
     },
     update: async (obj) => {
@@ -68,28 +68,28 @@ const productDAO = {
                 category,
                 name,
                 brand,
-                releasedDate,  // undefined인 경우 null로 기본값 설정
+                releasedDate,
                 price,
-                photo,  // 같은 처리
+                photo,
                 salesStatus,
                 stocks
             } = obj;
 
             const [results] = await db.execute(QUERY_UPDATE, [category, name, brand, releasedDate, price, photo, salesStatus, stocks, productNo]); // 풀에서 쿼리 실행
-            return results; // 결과 반환
+            return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
-            throw err; // 에러 발생 시 throw
+            throw err;
         }
     },
     delete: async (id) => {
         console.log(id);
         try {
-            const [results] = await db.execute(QUERY_DELETE, [id]); // 풀에서 쿼리 실행
-            return results; // 결과 반환
+            const [results] = await db.execute(QUERY_DELETE, [id]);
+            return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
-            throw err; // 에러 발생 시 throw
+            throw err;
         }
     }
 }
