@@ -44,9 +44,10 @@ https://transform.tools/html-to-jsx
 
 -> 메인페이지 (x)
 
--> CRUD 페이지 (x) --> 작업중
 
 10월 15일 화
+
+-> 상품 CRUD 백단 (x) --> 작업중, 어제 연동 오류로 오늘 마저 작업
 
 -> 댓글 CRUD 기능 구현 
 
