@@ -1,15 +1,14 @@
 const express = require('express');
-// const argon2 = require('argon2');
-const db = require('./db'); // DB 모듈 불러오기
+const argon2 = require('argon2');
+const pool = require('../db'); // DB 연결
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-  const { username, userId, password, phoneNumber } = req.body;
+router.post('/', async (req, res) => {
+  const { username, userId, password, phoneNumber, email } = req.body;
 
   try {
-    // Connection db에서 연결을 가져옴
-    const connection = await db.getConnection();
+    const connection = await pool.getConnection();
 
     // 사용자 존재 여부 확인
     const [rows] = await connection.execute('SELECT * FROM users WHERE userId = ?', [userId]);
@@ -19,23 +18,18 @@ router.post('/register', async (req, res) => {
     }
 
     // 비밀번호 암호화
-    // const hashedPassword = await argon2.hash(password);
+    const hashedPassword = await argon2.hash(password);
 
     // 사용자 정보 저장
     await connection.execute(
-      'INSERT INTO users (username, userId, password, phoneNumber) VALUES (?, ?, ?, ?)',
-      [username, userId, password, phoneNumber]
+      'INSERT INTO users (username, userId, password, phoneNumber, email) VALUES (?, ?, ?, ?, ?)',
+      [username, userId, hashedPassword, phoneNumber, email]
     );
-    // // 사용자 정보 저장
-    // await connection.execute(
-    //   'INSERT INTO users (username, userId, password, phoneNumber) VALUES (?, ?, ?, ?)',
-    //   [username, userId, hashedPassword, phoneNumber]
-    // );
 
     connection.release(); // 연결 반환
 
     // 성공 응답
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(200).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).json({ message: 'Registration failed' });
