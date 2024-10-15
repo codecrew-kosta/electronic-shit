@@ -1,6 +1,6 @@
 /**
  * 2024_10_14_남윤호 product CRUD 작업중_ Product 라우터추가
- * productRouter
+ * 2024_10_15_남윤호 기존 라우터를 app으로 대체 서브어플리이션화
  */
 
 const express = require('express');
@@ -16,6 +16,8 @@ const cookieParser = require('cookie-parser');
 const csrfProtection = require('./middlewares/csrfMiddleware'); // CSRF 미들웨어 조영우 20241015 추가
 const { authenticateJWT } = require('./middlewares/authMiddleware'); // JWT 인증 미들웨어 조영우 20241015 추가
 
+const NamApp = require("./NamApp"); //20241015_남윤호 앱
+
 const server = http.createServer(app);
 
 app.set('port', 3001);
@@ -30,7 +32,7 @@ app.use(csrfProtection); // CSRF 보호 미들웨어 적용 (특정 라우트에
 
 /* 남윤호 구현 기능 시작 */
 /* 이곳에 남윤호가 구현한 기능을 넣는다 */
-// app.use('/product', productRouter);
+app.use('/product', NamApp);
 /* 남윤호 구현 기능 끝 */
 
 
@@ -38,13 +40,14 @@ app.use(csrfProtection); // CSRF 보호 미들웨어 적용 (특정 라우트에
 /* 조영우 구현 기능 시작 */
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
 // app.use('/login', loginRouter);
+
 app.use('/auth', authRouter);
 
 // 보호된 경로에 JWT 미들웨어 적용 (예시)
 app.get('/protected', authenticateJWT, (req, res) => {
     res.json({ message: 'Protected route accessed!', user: req.user });
   });
-  
+
 /* 조영우 구현 기능 끝 */
 
 

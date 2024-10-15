@@ -1,75 +1,95 @@
 /**
- * 2024_10_14_남윤호 product CRUD 작업중_ productDAO
+ * 2024_10_15_남윤호 product CRUD 작업완료
  * 
- * 디비를 조회해서 실질저인 CRUD작업을 처리하는 곳이다.
+ * 디비를 조회해서 실질적인 CRUD작업을 처리하는 곳이다.
  */
 
 //mysql 디비연동 커넷션풀
-const connection = require('../config/mysqlDB'); // 20241014_남윤호 상품관련 디비 연동
-const express = require('express');
-const router = express.Router();
+const db = require('../config/mysqlDB'); // DB 모듈 불러오기
 
-
-const QUERY_SELECT = 'SELECT * FROM PRODUCTSINFO';
-const QUERY_UPDATE = 'UPDATE PRODUCTSINFO SET category=?, name=?, brand=?, releasedDate=?, price=?,photo=?,salesStatus=?,stocks=?,dateAdded=?,dateModified=?,userNo=?,userId=? WHERE ID=?;';
-const QUERY_INSERT = 'INSERT INTO PRODUCTSINFO (category, name,brand,releasedDate,price,photo,salesStatus,stocks,dateAdded,dateModified,userNo,userId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
-const QUERY_DELETE = 'DELETE FROM PRODUCTSINFO WHERE ID=?'
+//참고로 mysql은 대소문자 구별함 ...
+const QUERY_SELECT_All = 'select * from productsinfo';
+const QUERY_SELECT_ONE = 'select * from productsinfo where productNo=?';
+const QUERY_UPDATE = 'update productsinfo set category=?,name=?,brand=?,releasedDate=?,price=?,photo=?,salesStatus=?,stocks=? where productNo=?';
+const QUERY_CREATE = 'insert into productsinfo (category, name,brand,releasedDate,price,photo,salesStatus,stocks,userNo,userId) values (?,?,?,?,?,?,?,?,?,?)';
+const QUERY_DELETE = 'delete from productsinfo where productNo=?'
 
 
 // 여기서 넘어온 객체가지고 각종 연산처리
 const productDAO = {
-    findAll:
-        // users 전체 목록 불러오기
-        router.route('/').get((req, res) => {
-            console.log("들어오니?");
-
-            function callback(err, results) {
-                if (err) return res.status(500).json({ error: err });
-                res.send(results);
-            };
-            if (connection) {
-                connection.query(QUERY_SELECT, callback);
-            } else {
-                console.log('DB 연결 안됨!');
-            }
-        })
-    ,
+    findAll: async () => {
+        try {
+            const [results] = await db.execute(QUERY_SELECT_All);
+            return results;
+        } catch (err) {
+            console.error('DB 쿼리 에러:', err);
+            throw err;
+        }
+    },
     findById: async (id) => {
         try {
-            return await Car.find({ _id: mongoose.Types.ObjectId(id) })
-        } catch (error) {
-            console.log(error);
-            throw error;
+            const [results] = await db.execute(QUERY_SELECT_ONE, [id]);
+            return results;
+        } catch (err) {
+            console.error('DB 쿼리 에러:', err);
+            throw err;
         }
     },
     create: async (obj) => {
+
         try {
-            // Mongoose 모델의 인스턴스 생성
-            const newObj = new Car({ ...obj, num: autoId });
-            await newObj.save();
-            ++autoId;
-            return "car 생성되었음";
-        } catch (error) {
-            console.log(error);
-            throw error;
+            const {
+                category,
+                name,
+                brand,
+                releasedDate,
+                price,
+                photo,
+                salesStatus,
+                stocks,
+                // dateAdded,  
+                // dateModified, 
+                userNo,
+                userId
+            } = obj;
+
+            const [results] = await db.execute(QUERY_CREATE, [category, name, brand, releasedDate, price, photo, salesStatus, stocks, userNo, userId]); // 풀에서 쿼리 실행
+            return results;
+        } catch (err) {
+            console.error('DB 쿼리 에러:', err);
+            throw err;
         }
     },
     update: async (obj) => {
+        // console.log(obj.productNo);
         try {
-            await Car.updateOne({ _id: mongoose.Types.ObjectId(obj.id) }, { $set: obj })
-            return "car 수정되었음";
-        } catch (error) {
-            console.log(error);
-            throw error;
+            const {
+                productNo,
+                category,
+                name,
+                brand,
+                releasedDate,
+                price,
+                photo,
+                salesStatus,
+                stocks
+            } = obj;
+
+            const [results] = await db.execute(QUERY_UPDATE, [category, name, brand, releasedDate, price, photo, salesStatus, stocks, productNo]); // 풀에서 쿼리 실행
+            return results;
+        } catch (err) {
+            console.error('DB 쿼리 에러:', err);
+            throw err;
         }
     },
     delete: async (id) => {
+        console.log(id);
         try {
-            await Car.deleteOne({ _id: mongoose.Types.ObjectId(id) });
-            return "car 삭제되었음"
-        } catch (error) {
-            console.log(error);
-            throw error;
+            const [results] = await db.execute(QUERY_DELETE, [id]);
+            return results;
+        } catch (err) {
+            console.error('DB 쿼리 에러:', err);
+            throw err;
         }
     }
 }

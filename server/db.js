@@ -17,7 +17,7 @@ const db = async (req, res, next) => {
     try {
         req.db = await pool.getConnection(); // req 객체에 db 연결 추가
         console.log(`db ok`);
-        
+
         next(); // 다음 미들웨어 또는 라우트로 이동
     } catch (error) {
         console.error('DB connection error:', error);
