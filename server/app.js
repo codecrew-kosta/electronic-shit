@@ -4,10 +4,10 @@
  * 2024_10_15_전역에다가 영우님이 추가한 코드 넣으니까 url요청이 제대로 안감 조정필요 일단 주석처리해놓음
  */
 
-const express = require('express');
-const http = require('http');
-const cors = require('cors');
-const db = require('./db');
+const express = require("express");
+const http = require("http");
+const cors = require("cors");
+const db = require("./db");
 
 const app = express();
 // const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
@@ -19,9 +19,13 @@ const app = express();
 
 const NamApp = require("./NamApp"); //20241015_남윤호 앱
 
+// 10-16 한채경 router 추가(더 늘어나면 app 따로 분리 필요)
+const mainRouter = require("./router/MainRouter");
+const categoryRouter = require("./router/CategoryRouter");
+
 const server = http.createServer(app);
 
-app.set('port', 3001);
+app.set("port", 3001);
 app.use(db);
 
 app.use(cors());
@@ -33,10 +37,8 @@ app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.s
 
 /* 남윤호 구현 기능 시작 */
 /* 이곳에 남윤호가 구현한 기능을 넣는다 */
-app.use('/product', NamApp);
+app.use("/product", NamApp);
 /* 남윤호 구현 기능 끝 */
-
-
 
 /* 조영우 구현 기능 시작 */
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
@@ -51,32 +53,30 @@ app.use('/product', NamApp);
 
 /* 조영우 구현 기능 끝 */
 
-
-
 /* 한채경 구현 기능 시작 */
 /* 이곳에 한채경이 구현한 기능을 넣는다 */
 
+app.use("/", mainRouter); // 전체목록, 추천목록
+app.use("/products", categoryRouter); // 카테고리 별 아이템
+
 /* 한채경 구현 기능 끝 */
 
-
-
-app.get('/', (req, res) => {
-    try {
-        res.status(200).json({
-            status: 200,
-            message: 'hello world',
-        });
-        console.log('200 ok');
-    } catch (error) {
-        res.status(500).json({
-            status: 500,
-            message: `${error}`,
-        });
-        console.error('500 error: ', error);
-    }
-
-})
+app.get("/", (req, res) => {
+  try {
+    res.status(200).json({
+      status: 200,
+      message: "hello world",
+    });
+    console.log("200 ok");
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: `${error}`,
+    });
+    console.error("500 error: ", error);
+  }
+});
 
 server.listen(app.get(`port`), () => {
-    console.log(`http://localhost:${app.get('port')}`);
-})
+  console.log(`http://localhost:${app.get("port")}`);
+});
