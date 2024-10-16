@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { login, getProtectedData } from '../../services/authService'; // authService.js 가져오기
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
 
 
 function LoginForm() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const [accessToken, setAccessToken] = useState('');
-
+  const navigate = useNavigate();
   const handleLoginClick = async () => {
     try {
-      let username = "";
-      const { accessToken, csrfToken } = await login(username, password);
-      setAccessToken(accessToken);
-      // setCsrfToken(csrfToken);
-      alert('Login successful');
+      const response = await login(userId, password);
+      localStorage.setItem("username", response.username); // 로그인 성공 시 username 저장
+      console.log(response);
+      navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
       alert('Login failed');

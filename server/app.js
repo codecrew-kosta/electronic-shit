@@ -13,7 +13,7 @@ const app = express();
 // const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
 // const loginRouter = require("./router/Login");//20241014_조영우 로그인 및 회원가입 관련 라우터
 const authRouter = require("./router/authRouter");//20241014_조영우 로그인 및 회원가입 관련 라우터
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 // const csrfProtection = require('./middlewares/csrfMiddleware'); // CSRF 미들웨어 조영우 20241015 추가
 const { authenticateJWT } = require('./middlewares/authMiddleware'); // JWT 인증 미들웨어 조영우 20241015 추가
 
@@ -37,7 +37,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.send 쓰지 말 것.
 
-// app.use(cookieParser()); // 쿠키 파서 적용 조영우 20241015 추가
+app.use(cookieParser()); // 쿠키 파서 적용 조영우 20241015 추가
 // app.use(csrfProtection); // CSRF 보호 미들웨어 적용 (특정 라우트에서 사용 가능) 조영우 20241015 추가
 
 /* 남윤호 구현 기능 시작 */

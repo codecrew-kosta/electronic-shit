@@ -7,6 +7,9 @@ const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 30, // 최대 동시 연결 수 상향 20241016 조영우
+    queueLimit: 0, // 대기열 제한 없음 설정 20241016 조영우
 };
 
 // Connection Pool 생성

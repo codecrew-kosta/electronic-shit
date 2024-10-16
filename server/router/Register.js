@@ -26,13 +26,16 @@ router.post('/', async (req, res) => {
       [username, userId, hashedPassword, phoneNumber, email]
     );
 
-    connection.release(); // 연결 반환
+    
 
     // 성공 응답
     res.status(200).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).json({ message: 'Registration failed' });
+  }
+  finally{
+    connection.release(); // 연결 반환
   }
 });
 
