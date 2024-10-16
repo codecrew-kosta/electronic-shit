@@ -5,10 +5,6 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container px-4 px-lg-5">
-<<<<<<< HEAD
-        <a className="navbar-brand" href="/">Start Bootstrap</a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-=======
         <a className="navbar-brand" href="/">
           Start Bootstrap
         </a>
@@ -21,7 +17,6 @@ function Navbar() {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
->>>>>>> f3924d5a268d6d85a08f8c5a39ff44c119fdddd5
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
