@@ -1,3 +1,9 @@
+/**
+ * 2024.10.15_남윤호 
+ * 상품 상세페이지_http:/localhost:3001/product/id:? 파라미터 요청시
+ * 
+ * 여기서 ajax요청을 하면서 넘어온 id가 있다 가정하고 임의의 값을 넣어놨음
+ */
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../GlobalContext';
 import axios from 'axios'
@@ -6,12 +12,13 @@ function ProductDetail() {
   const { productList, setProductList } = useContext(GlobalContext);
 
   // 로딩 상태를 관리하는 state 추가
+
   const [loading, setLoading] = useState(true);
 
   // 노드 서버와 통신 get요청
   async function getdata() {
     try {
-      const { data } = await axios.get('http://localhost:3001/product/1');
+      const { data } = await axios.get('http://localhost:3001/product/44');
       console.log(data); // 데이터를 로그로 출력
       setProductList(data); // 가져온 데이터를 상태로 설정
     } catch (error) {
@@ -21,7 +28,7 @@ function ProductDetail() {
     }
   }
 
-  useEffect(() => {
+  useEffect((res, req) => {
     getdata();
   }, []); // 빈 배열을 전달해 컴포넌트가 마운트될 때 한 번만 실행
 

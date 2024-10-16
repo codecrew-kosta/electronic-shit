@@ -29,10 +29,10 @@ const server = http.createServer(app);
 app.set("port", 3001);
 app.use(db);
 
-// app.use(cors());
+app.use(cors());
 app.use(cors({
-    origin: 'http://localhost:3000', // 클라이언트 도메인을 명시
-    credentials: true, // 자격 증명 허용
+  origin: 'http://localhost:3000', // 클라이언트 도메인을 명시
+  credentials: true, // 자격 증명 허용
 }));//credentials 옵션 설정으로 인해 변화를 줌
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.send 쓰지 말 것.
@@ -54,7 +54,7 @@ app.use('/register', registerRouter);
 
 // 보호된 경로에 JWT 미들웨어 적용 (예시)
 app.get('/protected', authenticateJWT, (req, res) => {
-    res.json({ message: 'Protected route accessed!', user: req.user });
+  res.json({ message: 'Protected route accessed!', user: req.user });
 });
 
 /* 조영우 구현 기능 끝 */
