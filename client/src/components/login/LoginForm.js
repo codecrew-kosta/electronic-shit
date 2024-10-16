@@ -9,7 +9,8 @@ function LoginForm() {
 
   const handleLoginClick = async () => {
     try {
-      const { accessToken } = await login(userId, password);
+      let username = "";
+      const { accessToken, csrfToken } = await login(username, password);
       setAccessToken(accessToken);
       // setCsrfToken(csrfToken);
       alert('Login successful');
