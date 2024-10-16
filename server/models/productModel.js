@@ -18,26 +18,35 @@ const QUERY_DELETE = 'delete from productsinfo where productNo=?'
 // 여기서 넘어온 객체가지고 각종 연산처리
 const productDAO = {
     findAll: async () => {
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_SELECT_All);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     findById: async (id) => {
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_SELECT_ONE, [id]);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     create: async (obj) => {
-
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const {
                 category,
                 name,
@@ -58,11 +67,14 @@ const productDAO = {
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     update: async (obj) => {
-        // console.log(obj.productNo);
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const {
                 productNo,
                 category,
@@ -80,16 +92,22 @@ const productDAO = {
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     delete: async (id) => {
-        console.log(id);
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_DELETE, [id]);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        }
+        finally {
+            connection.release(); // 연결 반환
         }
     }
 }

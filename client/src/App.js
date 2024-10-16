@@ -20,6 +20,7 @@ import { GlobalProvider } from "./GlobalContext"; //전역 스테이트 관리
 // import './App.css';
 import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한채경 추가
 import ProductsCRUD from "./components/products/ProductsCRUD";
+import ReviewsCRUD from "./components/review/ReviewCRUD";
 
 function App() {
   return (
@@ -51,6 +52,15 @@ function App() {
             element={
               <>
                 <ProductsCRUD />
+              </>
+            }
+          />
+          {/* 2024.10.16_남윤호_리뷰관리 CRUD */}
+          <Route
+            path="/reviewsCRUD"
+            element={
+              <>
+                <ReviewsCRUD />
               </>
             }
           />
