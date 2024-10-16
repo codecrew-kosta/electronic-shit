@@ -13,29 +13,26 @@ function RegisterForm() {
     setState(e.target.value);
   }
   //2024_10_15_남윤호: 오류땜시 임시 생성
-  const [getData, setData] = useState(null);
-  const [getLoading, setLoading] = useState(null);
-  const [getError, setError] = useState(null);
+  // const [getData, setData] = useState(null);
+  // const [getLoading, setLoading] = useState(null);
+  // const [getError, setError] = useState(null);
 
-  
-  const registerHandler = () => {
+
+  const registerHandler = async () => {
     // 비동기 함수 정의
-    const fetchData = async () => {
-      try {
-        const response = await axios.post('http://localhost:3001/register', {
-          username,
-          userId,
-          password,
-          phoneNumber,
-          email
-        });
-        console.log(response.data);
-        alert("가입 완료");
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.post('http://localhost:3001/register', {
+        username,
+        userId,
+        password,
+        phoneNumber,
+        email
+      });
+      console.log(response.data);
+      alert("가입 완료");
+    } catch (error) {
+      console.log(error);
     }
-    fetchData();
   }
 
 

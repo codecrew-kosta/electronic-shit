@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { login, getProtectedData } from './services/authService'; // authService.js 가져오기
+import { login, getProtectedData } from '../../services/authService'; // authService.js 가져오기
 
 
 function LoginForm() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [accessToken, setAccessToken] = useState('');
-  const [csrfToken, setCsrfToken] = useState('');
 
   const handleLoginClick = async () => {
     try {
-      const { accessToken, csrfToken } = await login(username, password);
+      const { accessToken } = await login(userId, password);
       setAccessToken(accessToken);
-      setCsrfToken(csrfToken);
+      // setCsrfToken(csrfToken);
       alert('Login successful');
     } catch (error) {
       console.error('Login failed:', error);
@@ -20,15 +19,15 @@ function LoginForm() {
     }
   };
 
-  // 보호된 경로 접근
-  const handleProtectedRequest = async () => {
-    try {
-      const data = await getProtectedData(accessToken, csrfToken);
-      console.log('Protected data:', data);
-    } catch (error) {
-      console.error('Protected request failed:', error);
-    }
-  };
+  // // 보호된 경로 접근
+  // const handleProtectedRequest = async () => {
+  //   try {
+  //     const data = await getProtectedData(accessToken, csrfToken);
+  //     console.log('Protected data:', data);
+  //   } catch (error) {
+  //     console.error('Protected request failed:', error);
+  //   }
+  // };
 
   return (<>
     {/* Login Form */}
@@ -101,7 +100,7 @@ function LoginForm() {
       </div>
 
       {/* Submit button */}
-      <button type="submit" className="btn btn-primary btn-block mb-4">
+      <button type="submit" onClick={handleLoginClick} className="btn btn-primary btn-block mb-4">
         Sign in
       </button>
 
