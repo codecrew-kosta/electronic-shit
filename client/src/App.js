@@ -19,6 +19,7 @@ import Login from "./components/login/Login";
 import { GlobalProvider } from "./GlobalContext"; //전역 스테이트 관리
 // import './App.css';
 import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한채경 추가
+import ProductsCRUD from "./components/products/ProductsCRUD";
 
 function App() {
   return (
@@ -41,6 +42,15 @@ function App() {
               <>
                 <ProductDetail />
                 <RelatedProducts />
+              </>
+            }
+          />
+          {/* 2024.10.16_남윤호_상품관리 CRUD */}
+          <Route
+            path="/productsCRUD"
+            element={
+              <>
+                <ProductsCRUD />
               </>
             }
           />

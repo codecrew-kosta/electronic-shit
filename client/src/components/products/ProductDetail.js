@@ -1,3 +1,9 @@
+/**
+ * 2024.10.15_남윤호 
+ * 상품 상세페이지_http:/localhost:3001/product/id:? 파라미터 요청시
+ * 
+ * 여기서 ajax요청을 하면서 넘어온 id가 있다 가정하고 임의의 값을 넣어놨음
+ */
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../GlobalContext';
 import axios from 'axios'
@@ -6,6 +12,7 @@ function ProductDetail() {
   const { productList, setProductList } = useContext(GlobalContext);
 
   // 로딩 상태를 관리하는 state 추가
+
   const [loading, setLoading] = useState(true);
 
   // 노드 서버와 통신 get요청

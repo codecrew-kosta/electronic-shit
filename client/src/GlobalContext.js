@@ -1,3 +1,10 @@
+/**
+ * 2024.10.15_남윤호_전역 스테이트를 관리하는 곳임
+ * useContext부분을 app.js에서 불러오지 않고 모듈화 시킴
+ * 여기다 정의하고 필요한 컴포넌트에서 꺼내다 쓸수 있음
+ * 꺼내다 쓰는거는 /products/ProductsDetail.js 참고하셈
+ */
+
 import React, { createContext, useState } from 'react';
 
 // Context 생성
