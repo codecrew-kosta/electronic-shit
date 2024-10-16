@@ -16,18 +16,18 @@ const Input = () => {
     const { product, setProduct } = useContext(GlobalContext);
 
 
-    // 로딩 상태를 관리하는 state 추가
-    const [loading, setLoading] = useState(true);
+    // // 로딩 상태를 관리하는 state 추가
+    // const [loading, setLoading] = useState(true);
 
-    // 데이터가 로드 중이면 로딩 메시지 표시
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    // // 데이터가 로드 중이면 로딩 메시지 표시
+    // if (loading) {
+    //     return <div>Loading...</div>;
+    // }
 
-    // 데이터가 없는 경우 대비
-    if (!productList || productList.length === 0) {
-        return <div>No products available.</div>;
-    }
+    // // 데이터가 없는 경우 대비
+    // if (!productList || productList.length === 0) {
+    //     return <div>No products available.</div>;
+    // }
 
 
     // async function addData() {
@@ -49,14 +49,16 @@ const Input = () => {
     // 노드 서버와 통신 get요청
     async function getdata() {
         try {
-            const { data } = await axios.post('http://localhost:3001/product/');
+            await axios.post('http://localhost:3001/product/', product);
+            const { data } = await axios.get('http://localhost:3001/product/', product);
             console.log(data); // 데이터를 로그로 출력
             setProductList(data); // 가져온 데이터를 상태로 설정
         } catch (error) {
             console.error('오류 발생:', error);
-        } finally {
-            setLoading(false); // 데이터 요청 후 로딩 상태 false로 설정
         }
+        // finally {
+        //     setLoading(false); // 데이터 요청 후 로딩 상태 false로 설정
+        // }
     }
 
     // useEffect(() => {

@@ -29,7 +29,7 @@ const ProductModifyModal = ({ modalData, modifyOk }) => {
 
     async function modifyProductById() {
         try {
-            const { data } = await axios.post(`http://localhost:3035/carList/${product.productNo}`, product);
+            const { data } = await axios.post(`http://localhost:3001/product/${product.productNo}`, product);
             console.log(data);
             setProductList(data);
         } catch (error) {

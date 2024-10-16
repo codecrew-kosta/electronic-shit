@@ -20,6 +20,19 @@ const Output = () => {
     // 로딩 상태를 관리하는 state 추가
     const [loading, setLoading] = useState(true);
 
+    // 노드 서버와 통신 get요청
+    async function getdata() {
+        try {
+            const { data } = await axios.get('http://localhost:3001/product/');
+            console.log(data); // 데이터를 로그로 출력
+            setProductList(data); // 가져온 데이터를 상태로 설정
+        } catch (error) {
+            console.error('오류 발생:', error);
+        } finally {
+            setLoading(false); // 데이터 요청 후 로딩 상태 false로 설정
+        }
+    }
+
     // 컴포넌트가 마운트될 때 데이터 가져오기
     // 이거 안해주면 무한루프돔
     // 이게 상단으로 와서 먼저 시행되고 아래의 데이터 로드쪽이 작동하는거임
@@ -37,18 +50,7 @@ const Output = () => {
         return <div>No products available.</div>;
     }
 
-    // 노드 서버와 통신 get요청
-    async function getdata() {
-        try {
-            const { data } = await axios.get('http://localhost:3001/product/');
-            console.log(data); // 데이터를 로그로 출력
-            setProductList(data); // 가져온 데이터를 상태로 설정
-        } catch (error) {
-            console.error('오류 발생:', error);
-        } finally {
-            setLoading(false); // 데이터 요청 후 로딩 상태 false로 설정
-        }
-    }
+
 
 
 
@@ -70,7 +72,7 @@ const Output = () => {
             productList.map((product) => {
                 return <ProductItem
                     key={product.productNo}
-                    product={product} />
+                    productli={product} />
             })
         );
     }
