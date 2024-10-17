@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login, getProtectedData } from '../../services/authService'; // authService.js 가져오기
+import { login } from '../../services/authService'; // authService.js 가져오기
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
 
 
@@ -19,13 +19,23 @@ function LoginForm() {
     }
   };
 
-  // // 보호된 경로 접근
-  // const handleProtectedRequest = async () => {
+
+  // const refreshAccessToken = async () => {
   //   try {
-  //     const data = await getProtectedData(accessToken, csrfToken);
-  //     console.log('Protected data:', data);
+  //     const response = await axios.post('http://localhost:3001/auth/token', {}, {
+  //       withCredentials: true
+  //     });
+  //     const { accessToken } = response.data;
+  //     localStorage.setItem('accessToken', accessToken); // 새로운 액세스 토큰 저장
+  //     return accessToken;
   //   } catch (error) {
-  //     console.error('Protected request failed:', error);
+  //     console.error('Failed to refresh access token:', error);
+
+  //     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+  //       // 리프레시 토큰이 없거나 만료된 경우 로그아웃 처리
+  //       handleLogout();
+  //     }
+  //     return null;
   //   }
   // };
 

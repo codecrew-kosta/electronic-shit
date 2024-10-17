@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
             secure: false,  // 개발 환경에서는 잠시 secure를 disable한다.
             sameSite: 'Lax', // CSRF 공격 방지
             path: '/', // 이 경로에서 설정
-            maxAge: 15 * 60 * 1000, // 15분 동안 유효
+            maxAge: 5 * 60 * 1000, // 5분 동안 유효
         });
 
         // 리프레시 토큰을 HttpOnly 쿠키에 저장
@@ -127,7 +127,7 @@ exports.refreshToken = (req, res) => {
         const newAccessToken = generateAccessToken({ id: decoded.id, username: decoded.username });
         // 해독된 사용자 정보로 새로운 액세스 토큰을 생성함.
 
-        res.json({ accessToken: newAccessToken });
+        return res.status(200).json({ accessToken: newAccessToken });
         // 새로 발급된 액세스 토큰을 클라이언트에게 응답으로 보냄.
     } catch (error) {
         return res.status(403).json({ message: 'Invalid refresh token' });

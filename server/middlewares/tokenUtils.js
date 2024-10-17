@@ -11,7 +11,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 const generateAccessToken = (user) => {
   // Access Token을 생성하는 함수.
   // 인자로 받은 `user` 객체에서 `id`와 `username`을 JWT의 payload로 사용함.
-  return jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '15m' });
+  return jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '5m' });
   // 첫 번째 인자는 payload로, 사용자의 id와 username을 포함함.
   // 두 번째 인자는 서명을 위한 비밀 키(JWT_SECRET).
   // 세 번째 인자는 옵션으로, 토큰의 유효기간을 15분으로 설정함.

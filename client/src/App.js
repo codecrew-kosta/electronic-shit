@@ -8,7 +8,7 @@
  *  */
 
 // App.js
-import React, { useState, createContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Header from "./components/home/Header";
@@ -16,12 +16,17 @@ import Products from "./components/home/Products";
 import ProductDetail from "./components/products/ProductDetail";
 import RelatedProducts from "./components/products/RelatedProducts";
 import Login from "./components/login/Login";
-import { GlobalProvider } from "./GlobalContext"; //전역 스테이트 관리
+import { GlobalContext, GlobalProvider } from "./GlobalContext"; //전역 스테이트 관리
 // import './App.css';
 import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한채경 추가
 import ProductsCRUD from "./components/products/ProductsCRUD";
 
 function App() {
+  const { checkAccessToken, isLoggedIn } = useContext(GlobalContext); // useContext 사용
+  useEffect(() => {
+    checkAccessToken(); // 컴포넌트 마운트 시 토큰 검사
+  }, [checkAccessToken]);
+
   return (
     <GlobalProvider>
       <BrowserRouter>

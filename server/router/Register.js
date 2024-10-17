@@ -1,6 +1,5 @@
 const express = require('express');
 const argon2 = require('argon2');
-// const pool = require('../db'); // DB 연결
 
 const router = express.Router();
 

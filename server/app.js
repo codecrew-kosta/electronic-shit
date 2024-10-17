@@ -7,7 +7,8 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
-const db = require("./db");
+const {pool, db} = require("./db");
+
 
 const app = express();
 // const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
@@ -29,7 +30,6 @@ const server = http.createServer(app);
 app.set("port", 3001);
 app.use(db);
 
-app.use(cors());
 app.use(cors({
   origin: 'http://localhost:3000', // 클라이언트 도메인을 명시
   credentials: true, // 자격 증명 허용
@@ -86,3 +86,20 @@ app.get("/", (req, res) => {
 server.listen(app.get(`port`), () => {
   console.log(`http://localhost:${app.get("port")}`);
 });
+
+// 서버 종료 시 모든 연결 해제
+const shutdown = async () => {
+    console.log('Closing database pool...');
+    try {
+      await pool.end(); // 연결 풀 닫기
+      console.log('Database pool closed successfully.');
+    } catch (error) {
+      console.error('Error while closing database pool:', error);
+    } finally {
+      process.exit(0); // 프로세스 종료
+    }
+  };
+  
+  // 종료 신호 처리 (예: Ctrl + C 또는 SIGTERM)
+  process.on('SIGINT', shutdown); // 터미널에서 Ctrl + C
+  process.on('SIGTERM', shutdown); // 서버 종료 신호 처리
