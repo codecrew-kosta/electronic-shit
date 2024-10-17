@@ -5,63 +5,83 @@
  * 꺼내다 쓰는거는 /products/ProductsDetail.js 참고하셈
  */
 
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 // Context 생성
 export const GlobalContext = createContext();
 
 // Provider 컴포넌트
 export const GlobalProvider = ({ children }) => {
+  // 상품 목록 스테이트
+  const [productList, setProductList] = useState([]);
 
-    // 상품 목록 스테이트
-    const [productList, setProductList] = useState([]);
+  // 리뷰 목록 스테이트
+  const [reviewList, setReviewList] = useState([]);
 
-    // 리뷰 목록 스테이트
-    const [reviewList, setReviewList] = useState([]);
+  // 페이지네이션 페이지 스테이트 (10-16 한채경 추가)
+  const [currentPage, setCurrentPage] = useState(1);
 
-    // 상품 객체 스테이트
-    const [product, setProduct] = useState({
-        productNo: "",
-        category: "",
-        name: "",
-        brand: "",
-        releasedDate: "",
-        price: 0,
-        photo: "",
-        salesStatus: 0,
-        stocks: 0,
-        dateAdded: "",
-        dateModified: "",
-        userNo: 0,
-        userId: ""
-    });
+  // 로딩 스테이트 (10-16 한채경 추가)
+  const [loading, setLoading] = useState(true);
 
-    // 리뷰 객체 스테이트
-    const [review, setReview] = useState({
-        CommentNo: 0,
-        rate: 0,
-        commentText: "",
-        dateAdded: "",
-        dateModified: "",
-        userNo: 0,
-        userId: "",
-        productId: 0
-    });
+  // 검색어 스테이트 (10-16 한채경 추가)
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // 상품 객체 스테이트
+  const [product, setProduct] = useState({
+    productNo: "",
+    category: "",
+    name: "",
+    brand: "",
+    releasedDate: "",
+    price: 0,
+    photo: "",
+    salesStatus: 0,
+    stocks: 0,
+    dateAdded: "",
+    dateModified: "",
+    userNo: 0,
+    userId: "",
+  });
+
+  // 리뷰 객체 스테이트
+  const [review, setReview] = useState({
+    CommentNo: 0,
+    rate: 0,
+    commentText: "",
+    dateAdded: "",
+    dateModified: "",
+    userNo: 0,
+    userId: "",
+    productId: 0,
+  });
 
 
     const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인 조영우 추가
     const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태 조영우 추가
 
-    return (
-        <GlobalContext.Provider value={{
-            productList, setProductList,
-            reviewList, setReviewList,
-            product, setProduct,
-            review, setReview,
+  return (
+    <GlobalContext.Provider
+      value={{
+        productList,
+        setProductList,
+        reviewList,
+        setReviewList,
+        product,
+        setProduct,
+        review,
+        setReview,
             isLoggedIn, setIsLoggedIn,
             username, setUsername,
-        }}>
-            {children}
-        </GlobalContext.Provider>
-    );
+        currentPage,
+        setCurrentPage,
+        loading,
+        setLoading,
+        searchTerm,
+        setSearchTerm,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 };

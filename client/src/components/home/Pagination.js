@@ -1,5 +1,6 @@
 // components/Pagination.js
 import React from "react";
+// npm install로 react-bootstrap 설치 필요
 import { Pagination as BootstrapPagination } from "react-bootstrap";
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {

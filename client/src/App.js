@@ -19,7 +19,12 @@ import Login from "./components/login/Login";
 import { GlobalProvider } from "./GlobalContext"; //전역 스테이트 관리
 // import './App.css';
 import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한채경 추가
+import PopularProducts from "./components/home/PopularProducts"; // 10-16 한채경 추가
+import NewProducts from "./components/home/NewProducts"; // 10-16 한채경 추가
+import SearchResult from "./components/home/SearchResult";
+
 import ProductsCRUD from "./components/products/ProductsCRUD";
+import ReviewsCRUD from "./components/review/ReviewCRUD";
 
 function App() {
   return (
@@ -54,12 +59,25 @@ function App() {
               </>
             }
           />
+          {/* 2024.10.16_남윤호_리뷰관리 CRUD */}
+          <Route
+            path="/reviewsCRUD"
+            element={
+              <>
+                <ReviewsCRUD />
+              </>
+            }
+          />
           <Route path="/login" element={<Login />} />
           {/* 카테고리 추가 10-16 한채경 */}
           <Route
             path="/category/:categoryName"
             element={<CategoryProducts />}
           />
+          <Route path="/popular" element={<PopularProducts />}></Route>
+          <Route path="/new" element={<NewProducts />}></Route>
+          <Route path="/search" element={<SearchResult />} />
+          {/* ---------- */}
         </Routes>
       </BrowserRouter>
     </GlobalProvider>

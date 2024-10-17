@@ -18,26 +18,35 @@ const QUERY_DELETE = 'delete from reviews where CommentNo=?'
 
 const reviewDAO = {
     findAll: async () => {
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_SELECT_All);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     findById: async (id) => {
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_SELECT_ONE, [id]);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     create: async (obj) => {
-
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const {
                 rate,
                 commentText,
@@ -52,10 +61,14 @@ const reviewDAO = {
             console.error('DB 쿼리 에러:', err);
             throw err;
         }
+        finally {
+            connection.release(); // 연결 반환
+        }
     },
     update: async (obj) => {
-        // console.log(obj.reviewNo);
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const {
                 CommentNo,
                 rate,
@@ -67,16 +80,22 @@ const reviewDAO = {
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     },
     delete: async (id) => {
-        console.log(id);
+        let connection;
         try {
+            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_DELETE, [id]);
+            console.log(id);
             return results;
         } catch (err) {
             console.error('DB 쿼리 에러:', err);
             throw err;
+        } finally {
+            connection.release(); // 연결 반환
         }
     }
 }

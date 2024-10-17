@@ -4523,31 +4523,6 @@ textarea.form-control-lg {
   list-style: none;
 }
 
-/* Pagination Dark버전 CSS 추가 */
-.pagination-dark .page-link {
-  color: var(--bs-dark);
-  background-color: #fff;
-  border-color: rgba(0, 0, 0, 0.175);
-}
-
-.pagination-dark .page-link:hover {
-  color: #333;
-  background-color: #ced4da;
-  border-color: #ced4da;
-}
-
-.pagination-dark .page-item.active .page-link {
-  color:#fff;
-  background-color: #212529;
-  border-color: #212529;
-}
-
-.pagination-dark .page-link:focus {
-  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.5);
-}
-/* ============ */
-
-
 .page-link {
   position: relative;
   display: block;
@@ -10849,3 +10824,40 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+
+/* Pagination Dark버전 CSS 추가 */
+.pagination-dark .page-link {
+  color: var(--bs-dark);
+  background-color: #fff;
+  border-color: rgba(0, 0, 0, 0.175);
+}
+
+.pagination-dark .page-link:hover {
+  color: #333;
+  background-color: #ced4da;
+  border-color: #ced4da;
+}
+
+.pagination-dark .page-item.active .page-link {
+  color:#fff;
+  background-color: #212529;
+  border-color: #212529;
+}
+
+.pagination-dark .page-link:focus {
+  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.5);
+}
+/* ============ */
+
+/* DropDown 메뉴 색상 어둡게 변경 */
+.dropdown-menu .dropdown-item.active {
+  background-color: #343a40;
+  color: white;
+}
+
+.dropdown-item:hover {
+  background-color: #495057;
+  color: white;
+}
+/* ============ */

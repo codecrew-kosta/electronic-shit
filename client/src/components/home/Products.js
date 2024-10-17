@@ -1,19 +1,19 @@
 // components/home/Products.js
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import ProductCard from "./ProductCard";
-import Pagination from "./Pagination"; // Pagination 컴포넌트 가져오기
-import "../../App.css";
+import Pagination from "./Pagination";
+import { GlobalContext } from "../../GlobalContext";
 
 function Products() {
-  const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const { productList, setProductList, currentPage, setCurrentPage } =
+    useContext(GlobalContext); // currentPage와 setCurrentPage 추가
   const itemsPerPage = 8;
 
   useEffect(() => {
     fetch("http://localhost:3001/recommended")
       .then((response) => response.json())
       .then((data) => {
-        setProducts(data.data);
+        setProductList(data.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -22,8 +22,8 @@ function Products() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const currentItems = productList.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(productList.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -43,7 +43,6 @@ function Products() {
           )}
         </div>
 
-        {/* Pagination 컴포넌트 추가 */}
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
