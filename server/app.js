@@ -22,6 +22,7 @@ const NamApp = require("./NamApp"); //20241015_남윤호 앱
 // 10-16 한채경 router 추가(더 늘어나면 app 따로 분리 필요)
 const mainRouter = require("./router/MainRouter");
 const categoryRouter = require("./router/CategoryRouter");
+const searchRouter = require("./router/SearchRouter");
 
 const server = http.createServer(app);
 
@@ -58,6 +59,7 @@ app.use("/product", NamApp);
 
 app.use("/", mainRouter); // 전체목록, 추천목록
 app.use("/products", categoryRouter); // 카테고리 별 아이템
+app.use("/search", searchRouter); // 검색 기능
 
 /* 한채경 구현 기능 끝 */
 

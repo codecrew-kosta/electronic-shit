@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import Pagination from "./Pagination"; // Pagination 컴포넌트 가져오기
+import Pagination from "./Pagination";
 import { GlobalContext } from "../../GlobalContext";
+import SearchForm from "../SearchForm"; // SearchForm 컴포넌트 가져오기
 
-function CategoryProducts() {
-  // GlobalContext에서 필요한 스테이트 받아오기
+function SearchResult() {
   const {
     productList,
     setProductList,
@@ -15,27 +15,24 @@ function CategoryProducts() {
     setLoading,
   } = useContext(GlobalContext);
 
-  const { categoryName } = useParams();
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("query");
   let itemsPerPage = 8;
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); // 로딩 시작
-      setProductList([]); // 새로운 카테고리로 이동할 때 데이터 초기화
+      setLoading(true);
+      setProductList([]);
 
-      if (!categoryName) {
-        console.error("유효하지 않은 카테고리 이름:", categoryName);
-        setLoading(false); // 카테고리 이름이 잘못되었을 때 로딩 해제
+      if (!query) {
+        console.error("유효하지 않은 검색어:", query);
+        setLoading(false);
         return;
       }
 
-      const encodedCategory = encodeURIComponent(categoryName);
-      const url =
-        encodedCategory === encodeURIComponent("전체")
-          ? `http://localhost:3001/dummydata`
-          : `http://localhost:3001/products?category=${encodedCategory}`;
-
-      console.log("Fetching products for category:", encodedCategory);
+      const url = `http://localhost:3001/search?query=${encodeURIComponent(
+        query
+      )}`;
 
       try {
         const response = await fetch(url, {
@@ -51,19 +48,19 @@ function CategoryProducts() {
         console.log("Fetched data:", data);
 
         if (data && Array.isArray(data.data)) {
-          setProductList(data.data); // fetchedData는 배열로 받아옴
+          setProductList(data.data);
         } else {
           console.error("잘못된 데이터 구조:", data);
         }
       } catch (error) {
         console.error("데이터 가져오기 오류:", error);
       } finally {
-        setLoading(false); // 데이터 가져오기가 끝나면 로딩 해제
+        setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [categoryName]);
+  }, [query]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -76,11 +73,16 @@ function CategoryProducts() {
 
   return (
     <div className="category-products container py-5">
-      <h2 className="mb-4">{categoryName} 상품</h2>
+      <h2 className="mb-4">
+        {query} 키워드 검색 결과: {productList.length}건
+      </h2>
+
+      <SearchForm initialValue={query} />
+
       {loading ? (
         <p>Loading products...</p>
       ) : (
-        <div className="row">
+        <div className="row mt-4">
           {currentItems.length > 0 ? (
             currentItems.map((product) => (
               <div
@@ -105,4 +107,4 @@ function CategoryProducts() {
   );
 }
 
-export default CategoryProducts;
+export default SearchResult;

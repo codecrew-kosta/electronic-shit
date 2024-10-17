@@ -3,7 +3,7 @@ const router = express.Router();
 
 // 전체 데이터 가져오기(dummydata, 수정 필요)
 router.route("/dummydata").get(async (req, res) => {
-  const sql = "SELECT * FROM dummydata";
+  const sql = "SELECT * FROM productsinfo";
 
   try {
     const [results] = await req.db.query(sql); // req.db를 통해 쿼리 실행
@@ -25,8 +25,7 @@ router.route("/dummydata").get(async (req, res) => {
 });
 
 router.route("/recommended").get(async (req, res) => {
-  const sql =
-    "SELECT * FROM dummydata WHERE salesStatus = true OR stocks >= 100";
+  const sql = "SELECT * FROM productsinfo WHERE stocks >= 100";
 
   try {
     const [results] = await req.db.query(sql); // req.db를 통해 쿼리 실행

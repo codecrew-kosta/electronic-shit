@@ -1,13 +1,25 @@
-// components/Navbar.js
-import React from "react";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { GlobalContext } from "../GlobalContext";
+import SearchForm from "./SearchForm";
 
 function Navbar() {
+  const { setCurrentPage } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
+
+  // 페이지 이동 시 페이지네이션 초기화 함수
+  const handleNavLinkClick = (path) => {
+    setCurrentPage(1);
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container px-4 px-lg-5">
-        <a className="navbar-brand" href="/">
+        <NavLink
+          className="navbar-brand"
+          to="/"
+          onClick={() => handleNavLinkClick("/")}
+        >
           Start Bootstrap
-        </a>
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -22,120 +34,216 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
             <li className="nav-item">
-              <a className="nav-link active" href="#!">
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/"
+                onClick={() => handleNavLinkClick("/")}
+              >
                 Home
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#!">
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/about"
+                onClick={() => handleNavLinkClick("/about")}
+              >
                 About
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item dropdown">
-              <a
+              <NavLink
                 className="nav-link dropdown-toggle"
                 id="navbarDropdown"
-                href="#"
+                to="#"
                 role="button"
                 data-bs-toggle="dropdown"
               >
                 Shop
-              </a>
+              </NavLink>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a className="dropdown-item" href="/category/전체">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
+                    }
+                    to="/category/전체"
+                    onClick={() => handleNavLinkClick("/category/전체")}
+                  >
                     All Products
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item" href="#!">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
+                    }
+                    to="/popular"
+                    onClick={() => handleNavLinkClick("/popular")}
+                  >
                     Popular Items
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="#!">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
+                    }
+                    to="/new"
+                    onClick={() => handleNavLinkClick("/new")}
+                  >
                     New Arrivals
-                  </a>
+                  </NavLink>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/category/스마트폰">
+                  <NavLink
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
+                    }
+                    to="/category/스마트폰"
+                    onClick={() => handleNavLinkClick("/category/스마트폰")}
+                  >
                     Smartphones
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/태블릿">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/태블릿"
+                    onClick={() => handleNavLinkClick("/category/태블릿")}
+                  >
                     Tablets
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/스마트워치">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/스마트워치"
+                    onClick={() => handleNavLinkClick("/category/스마트워치")}
+                  >
                     Smartwatches
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/노트북">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/노트북"
+                    onClick={() => handleNavLinkClick("/category/노트북")}
+                  >
                     Laptops
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/헤드폰">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/헤드폰"
+                    onClick={() => handleNavLinkClick("/category/헤드폰")}
+                  >
                     Headphones
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/블루투스 스피커">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/블루투스 스피커"
+                    onClick={() =>
+                      handleNavLinkClick("/category/블루투스 스피커")
+                    }
+                  >
                     Bluetooth Speakers
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/전자책 리더기">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/전자책 리더기"
+                    onClick={() =>
+                      handleNavLinkClick("/category/전자책 리더기")
+                    }
+                  >
                     E-Readers
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/디지털 카메라">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/디지털 카메라"
+                    onClick={() =>
+                      handleNavLinkClick("/category/디지털 카메라")
+                    }
+                  >
                     Digital Cameras
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/게임 노트북">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/게임 노트북"
+                    onClick={() => handleNavLinkClick("/category/게임 노트북")}
+                  >
                     Gaming Laptops
-                  </a>
+                  </NavLink>
                 </li>
-
                 <li>
-                  <a className="dropdown-item" href="/category/게임 콘솔">
+                  <NavLink
+                    className={
+                      ({ isActive }) =>
+                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    }
+                    to="/category/게임 콘솔"
+                    onClick={() => handleNavLinkClick("/category/게임 콘솔")}
+                  >
                     Game Consoles
-                  </a>
+                  </NavLink>
                 </li>
               </ul>
             </li>
           </ul>
+          <SearchForm />
           <form className="d-flex">
-            <button className="btn btn-outline-dark" type="submit">
+            <button className="btn btn-outline-dark me-2" type="submit">
               <i className="bi-cart-fill me-1"></i>Cart
               <span className="badge bg-dark text-white ms-1 rounded-pill">
                 0
               </span>
             </button>
           </form>
-          &nbsp;
-          <button className=" btn btn-outline-dark" type="submit">
-            <i className="bi-cart-fill"></i>Sign In / Up
+          <button className="btn btn-outline-dark" type="submit">
+            <i className="bi-person-fill me-1"></i>Sign In / Up
           </button>
         </div>
       </div>
