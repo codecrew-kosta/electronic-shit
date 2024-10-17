@@ -1,6 +1,6 @@
 const express = require('express');
 const argon2 = require('argon2');
-const pool = require('../db'); // DB 연결
+// const pool = require('../db'); // DB 연결
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
   const { username, userId, password, phoneNumber, email } = req.body;
 
   try {
-    const connection = await pool.getConnection();
+    const connection = req.db;
 
     // 사용자 존재 여부 확인
     const [rows] = await connection.execute('SELECT * FROM users WHERE userId = ?', [userId]);
@@ -26,13 +26,16 @@ router.post('/', async (req, res) => {
       [username, userId, hashedPassword, phoneNumber, email]
     );
 
-    connection.release(); // 연결 반환
+    
 
     // 성공 응답
     res.status(200).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).json({ message: 'Registration failed' });
+  }
+  finally{
+    connection.release(); // 연결 반환
   }
 });
 

@@ -23,6 +23,9 @@ import PopularProducts from "./components/home/PopularProducts"; // 10-16 한채
 import NewProducts from "./components/home/NewProducts"; // 10-16 한채경 추가
 import SearchResult from "./components/home/SearchResult";
 
+import ProductsCRUD from "./components/products/ProductsCRUD";
+import ReviewsCRUD from "./components/review/ReviewCRUD";
+
 function App() {
   return (
     <GlobalProvider>
@@ -44,6 +47,24 @@ function App() {
               <>
                 <ProductDetail />
                 <RelatedProducts />
+              </>
+            }
+          />
+          {/* 2024.10.16_남윤호_상품관리 CRUD */}
+          <Route
+            path="/productsCRUD"
+            element={
+              <>
+                <ProductsCRUD />
+              </>
+            }
+          />
+          {/* 2024.10.16_남윤호_리뷰관리 CRUD */}
+          <Route
+            path="/reviewsCRUD"
+            element={
+              <>
+                <ReviewsCRUD />
               </>
             }
           />

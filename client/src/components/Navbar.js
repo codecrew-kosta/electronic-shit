@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import axios from "axios"; // 서버로 요청을 보내기 위한 axios 사용
 import { GlobalContext } from "../GlobalContext";
 import SearchForm from "./SearchForm";
 
@@ -10,6 +11,54 @@ function Navbar() {
   const handleNavLinkClick = (path) => {
     setCurrentPage(1);
   };
+
+  // const [csrfToken, setCsrfToken] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인
+  const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태
+  const navigate = useNavigate();
+
+  // // 서버에서 CSRF 토큰을 가져옴
+  // axios.get('http://localhost:3001/auth/csrf-token', { withCredentials: true })
+  //   .then((response) => setCsrfToken(response.data.csrfToken))
+  //   .catch((error) => console.error('Failed to fetch CSRF token:', error));
+
+  useEffect(() => {
+    // 액세스 토큰 유효성 확인
+    const checkAccessToken = async () => {
+      try {
+        // 서버에 액세스 토큰 검증 요청
+        const response = await axios.get(
+          "http://localhost:3001/auth/validate-token",
+          {
+            withCredentials: true, // HTTP-Only 쿠키 포함
+          }
+        );
+
+        // 토큰이 유효한 경우, 서버에서 받은 사용자 이름을 상태로 설정
+        setIsLoggedIn(true);
+        setUsername(response.data.user.username); // 사용자 이름을 받아와서 상태로 저장
+      } catch (error) {
+        setIsLoggedIn(false); // 토큰이 유효하지 않으면 로그인 상태 해제
+      }
+    };
+
+    checkAccessToken(); // 컴포넌트 마운트 시 토큰 검사
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3001/auth/logout",
+        {},
+        { withCredentials: true } // 쿠키 포함
+      );
+      setIsLoggedIn(false); // 상태 초기화
+      navigate("/"); // 메인 페이지로 리다이렉트
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container px-4 px-lg-5">
@@ -242,9 +291,24 @@ function Navbar() {
               </span>
             </button>
           </form>
-          <button className="btn btn-outline-dark" type="submit">
-            <i className="bi-person-fill me-1"></i>Sign In / Up
-          </button>
+          {isLoggedIn ? (
+            <>
+              <span className="navbar-text">환영합니다, {username} 님!</span>
+              &nbsp;
+              <button className="btn btn-outline-dark">마이페이지</button>
+              &nbsp;
+              <button className="btn btn-outline-dark" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <button
+              className="btn btn-outline-dark"
+              onClick={() => navigate("/login")}
+            >
+              Sign In / Up
+            </button>
+          )}
         </div>
       </div>
     </nav>

@@ -74,6 +74,8 @@ module.exports.modifyReviewById = async (req, res) => {
 module.exports.deleteReviewById = async (req, res) => {
 
     const id = req.params.id;
+    console.log(id); //undefined
+
 
     try {
         await reviewDAO.delete(id);
