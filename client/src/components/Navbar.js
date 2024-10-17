@@ -37,37 +37,31 @@ function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 액세스 토큰 유효성 확인
-    const checkAccessToken = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/auth/validate-token",
-          {
-            withCredentials: true, // HTTP-Only 쿠키 포함
-          }
-        );
-        setIsLoggedIn(true);
-        setUsername(response.data.user.username); // 사용자 이름을 받아와서 상태로 저장
+        if (localStorage.getItem("user")) {
+          setIsLoggedIn(true);
+          setUsername(localStorage.getItem("user").username); // 사용자 이름을 받아와서 상태로 저장
+        } else {
+          const response = await axios.get(`http://localhost:3001/logout`);
+          setIsLoggedIn(false); // 상태 초기화
+          navigate("/"); // 메인 페이지로 리다이렉트
+          console.log(response.data);
+        }
       } catch (error) {
-        setIsLoggedIn(false); // 토큰이 유효하지 않으면 로그인 상태 해제
+        console.error("Logout failed:", error);
       }
     };
 
-    checkAccessToken(); // 컴포넌트 마운트 시 토큰 검사
+    fetchData();
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:3001/auth/logout",
-        {},
-        { withCredentials: true } // 쿠키 포함
-      );
-      setIsLoggedIn(false); // 상태 초기화
-      navigate("/"); // 메인 페이지로 리다이렉트
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    const response = await axios.get(`http://localhost:3001/logout`);
+    setIsLoggedIn(false); // 상태 초기화
+    localStorage.removeItem("user");
+    navigate("/"); // 메인 페이지로 리다이렉트
+    console.log(response.data);
   };
 
   return (

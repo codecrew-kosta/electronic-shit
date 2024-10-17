@@ -10,12 +10,13 @@ const cors = require("cors");
 const db = require("./db");
 
 const app = express();
-// const productRouter = require("./router/Product"); //20241014_남윤호 상품관련 라우터
-// const loginRouter = require("./router/Login");//20241014_조영우 로그인 및 회원가입 관련 라우터
-const authRouter = require("./router/authRouter"); //20241014_조영우 로그인 및 회원가입 관련 라우터
-const cookieParser = require("cookie-parser");
-// const csrfProtection = require('./middlewares/csrfMiddleware'); // CSRF 미들웨어 조영우 20241015 추가
-const { authenticateJWT } = require("./middlewares/authMiddleware"); // JWT 인증 미들웨어 조영우 20241015 추가
+const authMiddleware = require("./middlewares/authMiddleware");//20241014_조영우 로그인 및 회원가입 관련 라우터
+const cookieParser = require('cookie-parser');
+// const { authenticateJWT } = require('./middlewares/authMiddleware'); // JWT 인증 미들웨어 조영우 20241015 추가
+
+const loginRouter = require('./router/LoginRouter');
+const logoutRouter = require('./router/LogoutRouter');
+const mypageRouter = require('./router/MypageRouter');
 
 const NamApp = require("./NamApp"); //20241015_남윤호 앱
 
@@ -24,25 +25,22 @@ const mainRouter = require("./router/MainRouter");
 const categoryRouter = require("./router/CategoryRouter");
 const searchRouter = require("./router/SearchRouter");
 const registerRouter = require("./router/Register");
-
+const expressSession = require('express-session');
 const server = http.createServer(app);
 
 app.set("port", 3001);
 app.use(db);
 
 app.use(cors());
-app.use(
-  cors({
-    origin: "http://localhost:3000", // 클라이언트 도메인을 명시
-    credentials: true, // 자격 증명 허용
-  })
-); //credentials 옵션 설정으로 인해 변화를 줌
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.send 쓰지 말 것.
 
 app.use(cookieParser()); // 쿠키 파서 적용 조영우 20241015 추가
-// app.use(csrfProtection); // CSRF 보호 미들웨어 적용 (특정 라우트에서 사용 가능) 조영우 20241015 추가
-
+app.use(expressSession({
+  secret: 'codecrewontrain', //시크릿 키 적용 필요
+  resave: true,
+  saveUninitialized: true
+}));
 /* 남윤호 구현 기능 시작 */
 /* 이곳에 남윤호가 구현한 기능을 넣는다 */
 app.use("/product", NamApp);
@@ -52,13 +50,9 @@ app.use("/product", NamApp);
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
 // app.use('/login', loginRouter);
 
-app.use("/auth", authRouter);
-app.use("/register", registerRouter);
-
-// 보호된 경로에 JWT 미들웨어 적용 (예시)
-app.get("/protected", authenticateJWT, (req, res) => {
-  res.json({ message: "Protected route accessed!", user: req.user });
-});
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
+app.use('/mypage', authMiddleware, mypageRouter);
 
 /* 조영우 구현 기능 끝 */
 

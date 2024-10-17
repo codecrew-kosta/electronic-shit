@@ -56,6 +56,10 @@ export const GlobalProvider = ({ children }) => {
     productId: 0,
   });
 
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인 조영우 추가
+    const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태 조영우 추가
+
   return (
     <GlobalContext.Provider
       value={{
@@ -67,6 +71,8 @@ export const GlobalProvider = ({ children }) => {
         setProduct,
         review,
         setReview,
+            isLoggedIn, setIsLoggedIn,
+            username, setUsername,
         currentPage,
         setCurrentPage,
         loading,
