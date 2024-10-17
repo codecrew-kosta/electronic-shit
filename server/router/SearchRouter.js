@@ -1,32 +1,65 @@
 const express = require("express");
 const router = express.Router();
 
+const brandMapping = {
+  삼성: "Samsung",
+  애플: "Apple",
+  소니: "Sony",
+  마이크로소프트: "Microsoft",
+  "얼티밋 이어": "Ultimate Ears",
+  아마존: "Amazon",
+  코보: "Kobo",
+  레이저: "Razer",
+  아수스: "ASUS",
+};
+
 // 검색 요청 처리
 router.get("/", async (req, res) => {
-  const { query } = req.query; // 클라이언트에서 보낸 검색어 받기
+  const { query, type } = req.query;
+
+  if (!query || !type) {
+    return res.status(400).json({
+      status: 400,
+      message: "검색어와 타입은 필수입니다.",
+    });
+  }
+
   console.log("받은 검색어:", query);
+  console.log("받은 검색 타입:", type);
+
+  const mappedBrand = brandMapping[query] || query;
 
   try {
-    // SQL 쿼리: category, name, brand에서 검색어가 포함된 데이터 가져오기
-    const searchQuery = `
-      SELECT DISTINCT * FROM productsinfo
-      WHERE
-        category LIKE ?
-        OR name LIKE ?
-        OR brand LIKE ?;
-    `;
+    let searchQuery = "";
+    let searchParam = `%${mappedBrand}%`;
 
-    // 와일드카드를 사용해 검색어를 쿼리에 적용
-    const searchParam = `%${query}%`;
+    switch (type) {
+      case "category":
+        searchQuery =
+          "SELECT DISTINCT * FROM productsinfo WHERE category LIKE ?;";
+        break;
+      case "name":
+        searchQuery = "SELECT DISTINCT * FROM productsinfo WHERE name LIKE ?;";
+        break;
+      case "brand":
+        searchQuery = "SELECT DISTINCT * FROM productsinfo WHERE brand LIKE ?;";
+        break;
+      default:
+        searchQuery = `
+          SELECT DISTINCT * FROM productsinfo
+          WHERE category LIKE ?
+          OR name LIKE ?
+          OR brand LIKE ?;
+        `;
+        searchParam = [searchParam, searchParam, searchParam];
+        break;
+    }
 
-    // DB에서 검색 쿼리 실행
-    const [rows] = await req.db.execute(searchQuery, [
-      searchParam,
-      searchParam,
-      searchParam,
-    ]);
+    const [rows] = await req.db.execute(
+      searchQuery,
+      Array.isArray(searchParam) ? searchParam : [searchParam]
+    );
 
-    // 결과가 있는지 확인
     if (rows.length > 0) {
       res.status(200).json({
         status: 200,
@@ -46,7 +79,7 @@ router.get("/", async (req, res) => {
       message: `MySQL Error: ${error}`,
     });
   } finally {
-    req.db.release(); // 연결 해제
+    req.db.release();
   }
 });
 
