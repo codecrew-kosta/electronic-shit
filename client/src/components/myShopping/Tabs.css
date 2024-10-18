@@ -1,0 +1,23 @@
+.tabs {
+    width: 200px; /* 탭의 너비를 설정합니다. */
+    background-color: #f8f9fa; /* 배경색을 연한 회색으로 설정합니다. */
+    border-radius: 5px; /* 모서리를 둥글게 만듭니다. */
+    padding: 10px; /* 안쪽 여백을 추가합니다. */
+  }
+  
+  .tab-item {
+    margin-bottom: 10px; /* 각 버튼 사이의 간격을 설정합니다. */
+    border-radius: 5px; /* 모서리를 둥글게 만듭니다. */
+    transition: background-color 0.3s; /* 배경색 전환 효과 추가 */
+  }
+  
+  .tab-item:hover {
+    background-color: #343a40; /* 마우스 오버 시 배경색 */
+    color: white; /* 텍스트 색상 변경 */
+  }
+  
+  .tab-item.active {
+    background-color: #343a40; /* 활성 탭의 배경색을 설정합니다. */
+    color: white; /* 활성 탭의 텍스트 색상 */
+  }
+  

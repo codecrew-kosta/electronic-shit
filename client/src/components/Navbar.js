@@ -45,7 +45,7 @@ function Navbar() {
         } else {
           const response = await axios.get(`http://localhost:3001/logout`);
           setIsLoggedIn(false); // 상태 초기화
-          navigate("/"); // 메인 페이지로 리다이렉트
+          // navigate("/"); // 메인 페이지로 리다이렉트 // 검색을 누르면 계속 리다이렉트 돼서 지워뒀음 (2024-10-17 한채경)
           console.log(response.data);
         }
       } catch (error) {

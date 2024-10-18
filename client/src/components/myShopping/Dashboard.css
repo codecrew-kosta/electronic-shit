@@ -1,0 +1,32 @@
+/* Dashboard.css */
+.dashboard-outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면의 전체 높이를 사용 */
+    background-color: #f0f0f0; /* 배경색 설정 (선택 사항) */
+  }
+  
+  .dashboard-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px; /* 탭과 콘텐츠 사이의 간격 */
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  }
+  
+  .tabs-container {
+    width: 20%; /* 탭 메뉴의 가로 크기 */
+  }
+  
+  .tab-content-container {
+    width: 75%; /* 콘텐츠의 가로 크기 */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+  
+  
