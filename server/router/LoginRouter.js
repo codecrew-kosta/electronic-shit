@@ -27,11 +27,12 @@ router.route("/").post(async (req, res) => {
 
         req.session.user = {
             id: userId,
-            username: user[0].username,
-            authorized: true
+            name:user[0].username,
+            sessionId: req.sessionID,
         }
 
-        console.log("POST - /session/login 처리");
+        console.log(req.session.user);
+        // localStorage.setItem('sessionId', req.session.user.sessionID);
         res.status(200).json(req.session.user);
         // 로그인 성공 후 상품페이지로 이동하는 링크 추가
     } catch (error) {

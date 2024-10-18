@@ -22,6 +22,7 @@ import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한�
 import PopularProducts from "./components/home/PopularProducts"; // 10-16 한채경 추가
 import NewProducts from "./components/home/NewProducts"; // 10-16 한채경 추가
 import SearchResult from "./components/home/SearchResult";
+import MyPage from "./components/mypage/MyPage";
 
 import ProductsCRUD from "./components/products/ProductsCRUD";
 import ReviewsCRUD from "./components/review/ReviewCRUD";
@@ -78,6 +79,7 @@ function App() {
           <Route path="/new" element={<NewProducts />}></Route>
           <Route path="/search" element={<SearchResult />} />
           {/* ---------- */}
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </BrowserRouter>
     </GlobalProvider>

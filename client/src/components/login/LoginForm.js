@@ -17,17 +17,22 @@ function LoginForm() {
       const response = await axios.post("http://localhost:3001/login", {
         userId,
         password,
-      });
+      }, { withCredentials: true });
       // 사용자 정보와 로그인 상태를 Local Storage에 저장
+      const sessionId = response.data.sessionId; // 세션 ID 저장
+      localStorage.setItem('sessionId', sessionId);
       localStorage.setItem("user", JSON.stringify(response.data));
       setIsLoggedIn(true);
       setUsername(response.data.username);
-      console.log(username)
+      console.log(sessionId)
       navigate("/");
     } catch (error) {
       console.error(error);
     }
   };
+
+
+  
 
   return (<>
     {/* Login Form */}

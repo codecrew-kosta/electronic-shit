@@ -3,9 +3,10 @@ import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios"; // 서버로 요청을 보내기 위한 axios 사용
 import { GlobalContext } from "../GlobalContext";
 import SearchForm from "./SearchForm";
+// import { locals } from "../../../server/NamApp";
 
 function Navbar() {
-  const { setCurrentPage } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
+  const { setCurrentPage, isLoggedIn, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
 
   // 페이지 이동 시 페이지네이션 초기화 함수
   const handleNavLinkClick = (path) => {
@@ -13,21 +14,22 @@ function Navbar() {
   };
 
   // const [csrfToken, setCsrfToken] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인
-  const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인
+  // const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (localStorage.getItem("user")) {
+        const user = JSON.parse(localStorage.getItem("user")); // JSON 파싱
+        if (user) {
           setIsLoggedIn(true);
-          setUsername(localStorage.getItem("user").username); // 사용자 이름을 받아와서 상태로 저장
+          setUsername(user.name); // 사용자 이름을 받아와서 상태로 저장
         } else {
-          const response = await axios.get(`http://localhost:3001/logout`);
-          setIsLoggedIn(false); // 상태 초기화
-          navigate('/'); // 메인 페이지로 리다이렉트
-          console.log(response.data);
+          await handleLogout();
+          // setIsLoggedIn(false); // 상태 초기화
+          // // navigate('/'); // 메인 페이지로 리다이렉트ㄴ
+          // console.log(response.data);
         }
       } catch (error) {
         console.error('Logout failed:', error);
@@ -35,15 +37,40 @@ function Navbar() {
     }
 
     fetchData();
-  }, []);
+  }, [navigate, setUsername, setIsLoggedIn]);
 
   const handleLogout = async () => {
-    const response = await axios.get(`http://localhost:3001/logout`);
-    setIsLoggedIn(false); // 상태 초기화
-    localStorage.removeItem('user');
-    navigate('/'); // 메인 페이지로 리다이렉트
-    console.log(response.data);
-  }
+    try {
+      const sessionId = localStorage.getItem('sessionId'); // 세션 ID 가져오기
+  
+      if (!sessionId) {
+        console.warn('세션 ID가 존재하지 않습니다.');
+        return;
+      }
+  
+      // 로그아웃 요청
+      const response = await axios.post(
+        'http://localhost:3001/logout',
+        {},
+        {
+          headers: {
+            Authorization: sessionId, // 세션 ID를 헤더에 포함
+          },
+          withCredentials: true, // CORS 문제 해결을 위한 설정 (필요 시)
+        }
+      );
+  
+      console.log(response.data.message); // 로그아웃 성공 메시지 출력
+  
+      // 상태 초기화 및 로컬 스토리지 정리
+      setIsLoggedIn(false);
+      localStorage.removeItem('user');
+      localStorage.removeItem('sessionId');
+      navigate('/'); // 메인 페이지로 리다이렉트
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -281,7 +308,7 @@ function Navbar() {
             <>
               <span className="navbar-text">환영합니다, {username} 님!</span>
               &nbsp;
-              <button className="btn btn-outline-dark">마이페이지</button>
+              <button className="btn btn-outline-dark" onClick={() => navigate("/mypage")}>마이페이지</button>
               &nbsp;
               <button className="btn btn-outline-dark" onClick={handleLogout}>
                 로그아웃
