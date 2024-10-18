@@ -18,9 +18,8 @@ const QUERY_DELETE = 'delete from productsinfo where productNo=?'
 // 여기서 넘어온 객체가지고 각종 연산처리
 const productDAO = {
     findAll: async () => {
-        let connection;
+        let connection = await db.getConnection(); // DB 연결 가져오기
         try {
-            connection = await db.getConnection(); // DB 연결 가져오기
             const [results] = await db.execute(QUERY_SELECT_All);
             return results;
         } catch (err) {

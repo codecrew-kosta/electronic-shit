@@ -8,43 +8,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '../../GlobalContext';
 
+
 import axios from 'axios'
 import "./Input.css"
 
 const Input = () => {
     const { productList, setProductList } = useContext(GlobalContext);
     const { product, setProduct } = useContext(GlobalContext);
-
-
-    // // 로딩 상태를 관리하는 state 추가
-    // const [loading, setLoading] = useState(true);
-
-    // // 데이터가 로드 중이면 로딩 메시지 표시
-    // if (loading) {
-    //     return <div>Loading...</div>;
-    // }
-
-    // // 데이터가 없는 경우 대비
-    // if (!productList || productList.length === 0) {
-    //     return <div>No products available.</div>;
-    // }
-
-
-    // async function addData() {
-    //     try {
-    //         const response = await axios.post('http://localhost:3035/carList/', getCar, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         console.log('POST 요청 성공:', response.data);
-    //         setCarList(response.data);
-    //     } catch (error) {
-    //         console.error('오류 발생:', error);
-    //     }
-    // }
-
-
 
     // 노드 서버와 통신 get요청
     async function getdata() {
@@ -56,14 +26,88 @@ const Input = () => {
         } catch (error) {
             console.error('오류 발생:', error);
         }
-        // finally {
-        //     setLoading(false); // 데이터 요청 후 로딩 상태 false로 설정
-        // }
+
     }
 
-    // useEffect(() => {
-    //     getdata();
-    // }, []); // 빈 배열을 전달해 컴포넌트가 마운트될 때 한 번만 실행
+    // 이미지 파일 업로드 처리 부분------------------------------------------------
+
+    const [postImg, setPostImg] = useState([]);
+    const [previewImg, setPreviewImg] = useState([]);
+
+    const imgbbApiKey = "d25985e1a346e08945ce7abfbd94f6c2"; // 여기에 본인의 imgbb API 키를 입력하세요.
+
+    //넘겨줄 urls
+    const urls = [];
+
+    // 실제로 리턴받은 url 갯수
+    let returnUrlNum = 0;
+
+    // 업로드한 파일과 반환받은 url 갯수 체크해주는 함수
+    function uploadNumCheck(data) {
+        console.log("postImg: " + postImg.length);
+
+        returnUrlNum++;
+
+        console.log("returnUrlNum: " + returnUrlNum);
+        postImg.length === returnUrlNum ? console.log("전송완료") : console.log("대기중");
+
+        // 누적해서 url 값을 저장함
+        urls.push(data);
+    }
+
+    function uploadFile(event) {
+        let fileArr = event.target.files;
+        setPostImg((prevImages) => [...prevImages, ...Array.from(fileArr)]);
+
+        Array.from(fileArr).forEach((file) => {
+            let fileRead = new FileReader();
+            fileRead.onload = function () {
+                setPreviewImg((prevUrls) => [...prevUrls, fileRead.result]);
+            };
+            fileRead.readAsDataURL(file);
+        });
+    }
+
+    async function uploadToImgBB(file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, {
+                method: "POST",
+                body: formData,
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                console.log("Uploaded Image URL:", data.data.url);
+                uploadNumCheck(data.data.url);
+            } else {
+                console.error("Error uploading image:", data.error.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    async function handleUpload() {
+        for (const file of postImg) {
+            await uploadToImgBB(file); // 선택된 모든 파일을 차례로 업로드
+        }
+
+        console.log(urls);
+
+        setProduct((pre) => { return { ...pre, photo: urls } });
+        setPostImg([]);
+        setPreviewImg([]);
+    }
+
+    function removeImage(index) {
+        setPreviewImg((prevUrls) => prevUrls.filter((_, i) => i !== index));
+        setPostImg((prevImages) => prevImages.filter((_, i) => i !== index));
+    }
+
+    // 이미지 파일 업로드 처리 부분------------------------------------------------
 
 
     return (<div className="container">
@@ -105,10 +149,50 @@ const Input = () => {
         </div>
         <div className="input-group mb-0 input-group-lg">
             <div className="input-group-prepend">
-                <span className="input-group-text">price</span>
+                <span className="input-group-text">photo</span>
             </div>
-            <input type="text" className="form-control" value={product.photo}
-                onChange={e => { setProduct((pre) => { return { ...pre, photo: e.target.value } }) }} />
+
+            <input
+                type="file"
+                multiple
+                onChange={uploadFile}
+                style={{ display: "none" }}
+                id="file-input"
+            />
+            <label htmlFor="file-input" style={{ cursor: "pointer", border: "1px solid #ccc", padding: "10px", display: "inline-block" }}>
+                파일 선택
+            </label>
+
+            <div style={{ marginTop: "20px" }}>
+                <h2>선택된 파일: {postImg.length}개</h2>
+                <ul>
+                    {postImg.map((file, i) => (
+                        <li key={i}>{file.name}</li>
+                    ))}
+                </ul>
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", marginTop: "20px", border: "1px solid" }}>
+                {previewImg.map((imgSrc, i) => (
+                    <div key={i} style={{ position: 'relative', display: 'inline-block', margin: '10px' }}>
+                        <button
+                            type="button"
+                            onClick={() => removeImage(i)}
+                            style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}>
+                            X
+                        </button>
+                        <img alt={imgSrc} src={imgSrc} style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
+                    </div>
+                ))}
+            </div>
+
+            <button
+                onClick={handleUpload}
+                style={{ marginTop: "20px", padding: "10px 15px", backgroundColor: "#4CAF50", color: "white", border: "none", cursor: "pointer" }}>
+                전송하기
+            </button>
+
+
         </div>
         <div className="input-group mb-0 input-group-lg">
             <div className="input-group-prepend">
