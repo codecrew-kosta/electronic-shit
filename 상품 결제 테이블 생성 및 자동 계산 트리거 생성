@@ -115,6 +115,17 @@ https://transform.tools/html-to-jsx
    * UPDATE productsinfo SET discount_rate = 10 WHERE product_id = 1; (discount_apply=1 인경우) --> 할인율 10% 적용된 가격으로 price값 자동 조정됨, original_prices는 할인전 가격 기입됨
    * UPDATE productsinfo SET discount_apply=1, discount_rate = 10 WHERE productNo = 1; (discount_apply=0 인경우) --> 할인율 10% 적용된 가격으로 price값 자동 조정됨 ,original_prices는 할인전 가격 기입됨
    * UPDATE productsinfo SET discount_apply=0 WHERE productNo = 1; --> 할인여부를 해제 하는경우 다시 할인 이전 original_price로 자동 조정됨
+  
+5. 상품 결제 테이블 생성, 상품 결제 상세 테이블 생성
+   * order_summary,order_details 테이블임
+   * order_summary에서는 상품 결제 총합을 계산하는 트리거를 걸어놨음, order_details의 행이 추가 혹인 삭제 이후 자동으로 결제 총합이 업데이트됨
+   * order_details에서는 상품의 가격과, 수량에 따른 총합을 계산하는 트리거를 걸어놨음, productsinfo에 기제된 price를 가져와서 총합을 자동으로 계산해줌
+   * 테스트는 아래와 같음
+     * INSERT INTO order_summay (order_summary_userNo) VALUES (1); --> 주문을 추가함 총액은 0 상태임
+     * INSERT INTO order_details (order_details_summary_id, order_details_productNo,quantity) VALUES (1, 55, 2);  --> productNo = 55인 상품을 2개 추가 --> order_summay의 상품 총합 업데이트됨
+     * DELETE FROM order_details WHERE order_details_summary_id = 1 AND order_details_productNo = 55; --> productNo = 55인 상품을 제거 --> order_summay의 상품 총합 업데이트됨
+
+6. 
 
 
 
