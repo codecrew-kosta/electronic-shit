@@ -107,6 +107,18 @@ https://transform.tools/html-to-jsx
 
 10월 19일 토
 1. 상품 찜 CRUD 백단 테스트완료, 최근 본 상품 CRUD 백단 테스트 완료
+2. 상품 찜, 최근 본 상품 테이블 생성
+3. 유저 테이블에 points 컬럼 생성--> 상품 결제시 사용
+4. 상품 테이블에 discount_apply 컬럼, discount_rate, original_price 컬럼 생성 
+  * 상품 할인 여부와 상품할인 %비율 컬럼임
+  * 상품 할인 여부가 1(true) 일시 상품 할인 비율에 따라 자동적으로 price값을 조절하는 sql의 트리거를 사용
+  * UPDATE productsinfo SET discount_rate = 10 WHERE product_id = 1; (discount_apply=1 인경우) --> 할인율 10% 적용된 가격으로 price값 자동 조정됨, original_prices는 할인전 가격 기입됨
+  * UPDATE productsinfo SET discount_apply=1, discount_rate = 10 WHERE productNo = 1; (discount_apply=0 인경우) --> 할인율 10% 적용된 가격으로 price값 자동 조정됨 ,original_prices는 할인전 가격 기입됨
+  * UPDATE productsinfo SET discount_apply=0 WHERE productNo = 1; --> 할인여부를 해제 하는경우 다시 할인 이전 original_price로 자동 조정됨
+
+
+
+
 
 10월 20일 일
 
