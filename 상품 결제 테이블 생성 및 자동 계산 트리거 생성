@@ -109,6 +109,7 @@ https://transform.tools/html-to-jsx
 1. 상품 찜 CRUD 백단 테스트완료, 최근 본 상품 CRUD 백단 테스트 완료
 2. 상품 찜, 최근 본 상품 테이블 생성
 3. 유저 테이블에 points 컬럼 생성--> 상품 결제시 사용
+   * 상품 결제시 자동 차감, 상품 취소시 자동 증가 트리거 생성함
 4. 상품 테이블에 discount_apply 컬럼, discount_rate, original_price 컬럼 생성 
    * 상품 할인 여부와 상품할인 %비율 컬럼임
    * 상품 할인 여부가 1(true) 일시 상품 할인 비율에 따라 자동적으로 price값을 조절하는 sql의 트리거를 사용
@@ -125,10 +126,7 @@ https://transform.tools/html-to-jsx
      * INSERT INTO order_details (order_details_summary_id, order_details_productNo,quantity) VALUES (1, 55, 2);  --> productNo = 55인 상품을 2개 추가 --> order_summay의 상품 총합 업데이트됨
      * DELETE FROM order_details WHERE order_details_summary_id = 1 AND order_details_productNo = 55; --> productNo = 55인 상품을 제거 --> order_summay의 상품 총합 업데이트됨
 
-6. 
-
-
-
+6. 상품결제 백단 작업중, 테스트 진행중임
 
 
 10월 20일 일
