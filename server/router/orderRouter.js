@@ -15,10 +15,10 @@ router.get("/", async (req, res) => {
        SELECT
             os.order_summary_id,  -- 주문 번호
             os.order_summary_userNo,  -- 유저 ID
-            os.order_total_amount, -- 총 주문금액
+            os.total_amount, -- 총 주문금액
             od.order_details_productNo,  -- 상품 ID
             od.quantity,  -- 주문한 상품 수량
-            p.product_name,  -- 상품 이름
+            p.name,  -- 상품 이름
             p.price,  -- 상품 가격
             od.order_details_price,  -- 주문 당시의 가격 (할인 적용 여부 반영)
             od.order_details_total_price  -- 가격 * 수량 
@@ -39,13 +39,13 @@ router.get("/", async (req, res) => {
         if (rows.length > 0) {
             res.status(200).json({
                 status: 200,
-                message: `결제 목록: ${user_id}에 대한 검색 결과`,
+                message: `결제 목록: 유저_${user_id}에 대한 검색 결과`,
                 data: rows,
             });
         } else {
             res.status(404).json({
                 status: 404,
-                message: `결제 목록: ${user_id}에 대한 결과가 없습니다.`,
+                message: `결제 목록: 유저_${user_id}에 대한 결과가 없습니다.`,
             });
         }
     } catch (error) {
@@ -61,6 +61,7 @@ router.get("/", async (req, res) => {
 
 //http://localhost:3001/product/order
 //CREATE
+//사용자 포인트 차감은 따로 처리해야됨 트리거로 없음
 router.post("/", async (req, res) => {
     const { user_id } = req.body; // 클라이언트에서 보낸 사용자 id 받기
     const { products } = req.body; // products: [{ product_id: 56, quantity: 2 }, { product_id: 57, quantity: 1 }] 이런식으로 
@@ -77,7 +78,7 @@ router.post("/", async (req, res) => {
 
         // 유저의 잔액 조회
         let userPoints = userData[0].points;
-        console.log("유저 잔액:", userPoints);
+        console.log("결제전 유저 잔액:", userPoints);
 
         //주문상품의 총액을 저장할 변수
         let totalAmount = 0;
@@ -103,7 +104,7 @@ router.post("/", async (req, res) => {
 
             // 상품 가격 조회
             const [productResult] = await req.db.execute(`
-                SELECT price FROM products WHERE product_id = ?;
+                SELECT price FROM productsinfo WHERE productNo = ?;
             `, [product_id]);
 
             const productPrice = productResult[0].price;
@@ -119,6 +120,13 @@ router.post("/", async (req, res) => {
 
                 await req.db.execute(orderDetailsQuery, [orderSummaryId, product_id, quantity]);
             }
+
+            // 잔액계산
+            let result = userPoints - totalAmount;
+            console.log('결제후 유저 잔액: ', result);
+
+            // 유저 포인트 업데이트(차감)
+            await req.db.execute(`update users set points = ? where userNo = ?;`, [result, user_id]);
 
             // 트랜잭션 커밋
             await req.db.commit();
@@ -152,12 +160,12 @@ router.post("/", async (req, res) => {
     }
 });
 
-//http://localhost:3001/product/order/delete?user_id=?&order_summary_id=?
+//http://localhost:3001/product/order/delete?order_summary_id=?
 //DELETE
 //캐스케이딩이 걸려있어서 order_summary테이블에서 지우기만 해도 된다.
-//주문취소가 되면 트리거로 걸려있는 user테이블의 포인트가 알아서 반환처리된다.
+
 router.delete("/delete", async (req, res) => {
-    const { user_id } = req.body; // 클라이언트에서 보낸 사용자 id 받기
+    const { user_id } = req.body; // 주문내역만 id만 받아서 지워도 될듯
     const { order_summary_id } = req.body; // 주문 내역 id
 
     console.log("사용자 id:", user_id);
@@ -165,14 +173,37 @@ router.delete("/delete", async (req, res) => {
 
 
     try {
+
+        // 유저 정보 가져오기
+        const [userData] = await await req.db.execute(`select * from users where userNo = ?;`, [user_id]);
+        // 유저의 잔액 조회
+        let userPoints = userData[0].points;
+        console.log("취소전 유저 잔액:", userPoints);
+
+        //취소상품의 총액을 가져오기
+        const Query = `select total_amount from order_summary where order_summary_id =?;`;
+        const [order_summary_totalAmount] = await req.db.execute(Query, [order_summary_id]);
+
+        let totalAmount = order_summary_totalAmount[0].total_amount;
+        console.log("취소전 결제총합:", totalAmount);
+
+        //계산 결과
+        let result = userPoints + totalAmount;
+        console.log("취소후 유저 잔액:", result);
+
         // SQL 쿼리: 
-        var Query = `delete from order_summary where user_id=? and order_summary_id =?;`;
+        const Query_delete = `delete from order_summary where order_summary_id =?;`;
 
         // DB에서 쿼리 실행
-        const [rows] = await req.db.execute(Query, [user_id, order_summary_id]);
+        const [rows] = await req.db.execute(Query_delete, [order_summary_id]);
+        console.log("Affected Rows:", rows.affectedRows);
 
         // 결과가 있는지 확인
         if (rows.affectedRows > 0) {
+
+            // 유저 포인트 업데이트(증가)
+            await req.db.execute(`update users set points = ? where userNo = ?;`, [result, user_id]);
+
             res.status(200).json({
                 status: 200,
                 message: `주문 내역: ${user_id}의 ${order_summary_id} 주문 취소됨`,
@@ -181,7 +212,7 @@ router.delete("/delete", async (req, res) => {
         } else {
             res.status(404).json({
                 status: 404,
-                message: `주문 내역: ${user_id}의 ${product_id} 주문 취소 실패`,
+                message: `주문 내역: ${user_id}의 ${order_summary_id} 주문 취소 실패`,
             });
         }
     } catch (error) {
