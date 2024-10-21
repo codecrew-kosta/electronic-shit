@@ -10,13 +10,14 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
   const { username, setUsername } = useContext(GlobalContext);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/");
-    }
-  }, [isLoggedIn, navigate]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     navigate("/");
+  //   }
+  // }, [isLoggedIn, navigate]);
 
   const handleLoginClick = async (e) => {
     e.preventDefault();
@@ -35,18 +36,15 @@ function LoginForm() {
       // 사용자 정보와 로그인 상태를 Local Storage에 저장
       // const sessionId = response.data.sessionId; // 세션 ID 저장
       // localStorage.setItem('sessionId', sessionId);
-      await sessionStorage.setItem("user", JSON.stringify(response.data))
-      await setUsername(response.data.username);
+      sessionStorage.setItem("user", JSON.stringify(response.data))
+      setUsername(response.data.username);
       // localStorage.setItem("user", JSON.stringify(response.data));
-      await setIsLoggedIn(true);
+      setIsLoggedIn(true);
+
       console.log("로그인폼", isLoggedIn);
-
-
       // console.log(sessionId)
 
-
-
-      // navigate("/");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

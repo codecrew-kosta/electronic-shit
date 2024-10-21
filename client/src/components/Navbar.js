@@ -12,11 +12,14 @@ function Navbar() {
   const [isLogin, setIsLogin] = useState(false)
   const { setCurrentPage, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
   const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
+
   useEffect(() => {
     if (sessionUser) {
       setIsLogin(true)
+    } else {
+      setIsLogin(false);
     }
-  }, [location, sessionUser])
+  }, [location, sessionUser]);
 
   console.log(location.pathname, "네브바",);
 
@@ -50,26 +53,26 @@ function Navbar() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem("user")); // JSON 파싱
-        if (user) {
-          setIsLoggedIn(true);
-          setUsername(user.name); // 사용자 이름을 받아와서 상태로 저장
-        } else {
-          // await handleLogout();
-          // setIsLoggedIn(false); // 상태 초기화
-          // // navigate('/'); // 메인 페이지로 리다이렉트ㄴ
-          // console.log(response.data);
-        }
-      } catch (error) {
-        console.error("Logout failed:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const user = JSON.parse(localStorage.getItem("user")); // JSON 파싱
+  //       if (user) {
+  //         setIsLoggedIn(true);
+  //         setUsername(user.name); // 사용자 이름을 받아와서 상태로 저장
+  //       } else {
+  //         // await handleLogout();
+  //         // setIsLoggedIn(false); // 상태 초기화
+  //         // // navigate('/'); // 메인 페이지로 리다이렉트ㄴ
+  //         // console.log(response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Logout failed:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [navigate, setUsername, setIsLoggedIn]);
+  //   fetchData();
+  // }, [navigate, setUsername, setIsLoggedIn]);
 
   const handleLogout = async () => {
     try {
@@ -97,8 +100,9 @@ function Navbar() {
       // 상태 초기화 및 로컬 스토리지 정리
       setIsLoggedIn(false);
       localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
       // localStorage.removeItem('sessionId');
-      // navigate('/'); // 메인 페이지로 리다이렉트
+      navigate('/'); // 메인 페이지로 리다이렉트
     } catch (error) {
       console.error('Logout failed:', error);
     }
