@@ -24,10 +24,12 @@ import NewProducts from "./components/home/NewProducts"; // 10-16 한채경 추�
 import SearchResult from "./components/home/SearchResult";
 import MyPage from "./components/mypage/MyPage";
 
-import ProductsCRUD from "./components/products/ProductsCRUD";
+
 import ReviewsCRUD from "./components/review/ReviewCRUD";
 import ImageTest from "./components/fileupload/ImageTest"
 import Dashboard from "./components/myShopping/Dashboard";
+
+import ProductCRUD from "./components/productCRUD/productCRUD";
 
 function App() {
   return (
@@ -55,10 +57,10 @@ function App() {
           />
           {/* 2024.10.16_남윤호_상품관리 CRUD */}
           <Route
-            path="/productsCRUD"
+            path="/productCRUD"
             element={
               <>
-                <ProductsCRUD />
+                <ProductCRUD />
               </>
             }
           />
