@@ -16,16 +16,6 @@ const ProductModifyModal = ({ modalData, modifyOk }) => {
     const { productList, setProductList } = useContext(GlobalContext);
     const { product, setProduct } = useContext(GlobalContext);
 
-    // 노드 서버와 통신 get요청
-    // async function modifyCarById() {
-    //     try {
-    //         const { data } = await axios.post(`http://localhost:3035/carList/${getCar._id}`, getCar);
-    //         console.log(data);
-    //         setCarList(data);
-    //     } catch (error) {
-    //         console.error('오류 발생:', error);
-    //     }
-    // }
 
     async function modifyProductById() {
         try {

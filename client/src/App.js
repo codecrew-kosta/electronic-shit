@@ -26,6 +26,8 @@ import MyPage from "./components/mypage/MyPage";
 
 import ProductsCRUD from "./components/products/ProductsCRUD";
 import ReviewsCRUD from "./components/review/ReviewCRUD";
+import ImageTest from "./components/fileupload/ImageTest"
+import Dashboard from "./components/myShopping/Dashboard";
 
 function App() {
   return (
@@ -69,6 +71,14 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/img"
+            element={
+              <>
+                <ImageTest />
+              </>
+            }
+          />
           <Route path="/login" element={<Login />} />
           {/* 카테고리 추가 10-16 한채경 */}
           <Route
@@ -78,6 +88,7 @@ function App() {
           <Route path="/popular" element={<PopularProducts />}></Route>
           <Route path="/new" element={<NewProducts />}></Route>
           <Route path="/search" element={<SearchResult />} />
+          <Route path="/myshopping" element={<Dashboard />} />
           {/* ---------- */}
           <Route path="/mypage" element={<MyPage />} />
         </Routes>
