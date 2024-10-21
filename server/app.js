@@ -31,10 +31,29 @@ const server = http.createServer(app);
 
 const MySQLStore = require('express-mysql-session')(expressSession);
 
+app.use(expressSession({
+  secret: 'my key',// 세션을 암호화하는 비밀 키
+  resave: true,// 세션이 수정되지 않아도 다시 저장할지 여부
+  saveUninitialized: true,  // 초기화되지 않은 세션을 저장할지 여부
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 // 쿠키의 만료 기간 (1일)
+  }
+}));
+
 app.set("port", 3001);
 app.use(db);
 
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:3000',  // 프론트엔드 주소
+  credentials: true,  // 세션을 포함한 쿠키를 허용하도록 설정
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,  // 1일
+    sameSite: 'None',  // 다른 도메인에서도 쿠키가 허용되도록 설정
+    secure: false  // HTTPS가 아닐 경우 false로 설정
+  }
+}));
 
 // const sessionStore = new MySQLStore({
 //   host: process.env.DB_HOST,
@@ -47,11 +66,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.send 쓰지 말 것.
 
 app.use(cookieParser()); // 쿠키 파서 적용 조영우 20241015 추가
-app.use(expressSession({
-  secret: 'my key',
-  resave: true,
-  saveUninitialized: true
-}));
+
 
 /* 남윤호 구현 기능 시작 */
 /* 이곳에 남윤호가 구현한 기능을 넣는다 */
