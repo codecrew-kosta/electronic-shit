@@ -25,6 +25,7 @@ import SearchResult from "./components/home/SearchResult";
 
 import ProductsCRUD from "./components/products/ProductsCRUD";
 import ReviewsCRUD from "./components/review/ReviewCRUD";
+import ImageTest from "./components/fileupload/ImageTest"
 import Dashboard from "./components/myShopping/Dashboard";
 
 function App() {
@@ -66,6 +67,14 @@ function App() {
             element={
               <>
                 <ReviewsCRUD />
+              </>
+            }
+          />
+          <Route
+            path="/img"
+            element={
+              <>
+                <ImageTest />
               </>
             }
           />

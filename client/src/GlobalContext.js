@@ -27,6 +27,9 @@ export const GlobalProvider = ({ children }) => {
   // 검색어 스테이트 (10-16 한채경 추가)
   const [searchTerm, setSearchTerm] = useState("");
 
+  // 20241018_남윤호_이미지url 스테이트
+  const [imgUrl, setImgUrl] = useState("");
+
   // 상품 객체 스테이트
   const [product, setProduct] = useState({
     productNo: "",
@@ -79,6 +82,7 @@ export const GlobalProvider = ({ children }) => {
         setLoading,
         searchTerm,
         setSearchTerm,
+        imgUrl, setImgUrl
       }}
     >
       {children}
