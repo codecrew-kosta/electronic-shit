@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Product Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .modal-dialog {
+            max-width: 500px;
+        }
+
+        .review-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-card .review-content {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Product Page</a>
+            <button class="btn btn-outline-light" type="button">
+                Cart <span class="badge bg-light text-dark">4</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Product Display -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <!-- Example Product Card -->
+                <div class="col">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="https://dummyimage.com/600x400/dee2e6/6c757d.jpg"
+                            alt="Product" />
+                        <div class="card-body">
+                            <h5 class="card-title">Product 1</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Reviews Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Customer Reviews</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReviewModal">Write a
+                    Review</button>
+            </div>
+            <div class="row">
+                <!-- Review 1 -->
+                <div class="col-md-4">
+                    <div class="card my-3 review-card">
+                        <div class="review-content">
+                            <div class="card-body">
+                                <h5 class="card-title">John Doe</h5>
+                                <p class="card-text">This product is great! Totally worth the price.</p>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#editReviewModal" data-name="John Doe"
+                                data-review="This product is great! Totally worth the price.">Edit</button>
+                            <button class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal"
+                                data-bs-target="#deleteReviewModal" data-name="John Doe">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Review 2 -->
+                <div class="col-md-4">
+                    <div class="card my-3 review-card">
+                        <div class="review-content">
+                            <div class="card-body">
+                                <h5 class="card-title">Jane Smith</h5>
+                                <p class="card-text">Good quality, but the delivery took too long.</p>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#editReviewModal" data-name="Jane Smith"
+                                data-review="Good quality, but the delivery took too long.">Edit</button>
+                            <button class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal"
+                                data-bs-target="#deleteReviewModal" data-name="Jane Smith">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright © Your Website 2024</p>
+        </div>
+    </footer>
+
+    <!-- Add Review Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addReviewModalLabel">Write a Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addReviewForm">
+                        <div class="mb-3">
+                            <label for="reviewerName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="reviewerName" placeholder="Enter your name"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewText" class="form-label">Your Review</label>
+                            <textarea class="form-control" id="reviewText" rows="3" placeholder="Write your review"
+                                required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="addReviewForm" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Review Modal -->
+    <div class="modal fade" id="editReviewModal" tabindex="-1" aria-labelledby="editReviewModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editReviewModalLabel">Edit Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editReviewForm">
+                        <div class="mb-3">
+                            <label for="editReviewerName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="editReviewerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editReviewText" class="form-label">Review</label>
+                            <textarea class="form-control" id="editReviewText" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="editReviewForm" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Review Modal -->
+    <div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-labelledby="deleteReviewModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteReviewModalLabel">Delete Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this review?</p>
+                    <p id="deleteReviewName"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteReviewButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript and dependencies-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script>
+        // Editing a review
+        const editReviewModal = document.getElementById('editReviewModal');
+        editReviewModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const name = button.getAttribute('data-name');
+            const review = button.getAttribute('data-review');
+
+            const editReviewerName = document.getElementById('editReviewerName');
+            const editReviewText = document.getElementById('editReviewText');
+
+            editReviewerName.value = name;
+            editReviewText.value = review;
+        });
+
+        // Deleting a review
+        const deleteReviewModal = document.getElementById('deleteReviewModal');
+        deleteReviewModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const name = button.getAttribute('data-name');
+
+            const deleteReviewName = document.getElementById('deleteReviewName');
+            deleteReviewName.innerHTML = `Review by: ${name}`;
+        });
+
+        // Adding review
+        const addReviewForm = document.getElementById('addReviewForm');
+        addReviewForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const reviewerName = document.getElementById('reviewerName').value;
+            const reviewText = document.getElementById('reviewText').value;
+
+            console.log(`Review by ${reviewerName}: ${reviewText}`);
+
+            addReviewForm.reset();
+            $('#addReviewModal').modal('hide');
+        });
+
+        // Saving edited review
+        const editReviewForm = document.getElementById('editReviewForm');
+        editReviewForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const reviewerName = document.getElementById('editReviewerName').value;
+            const reviewText = document.getElementById('editReviewText').value;
+
+            console.log(`Updated review by ${reviewerName}: ${reviewText}`);
+
+            editReviewForm.reset();
+            $('#editReviewModal').modal('hide');
+        });
+
+        // Deleting review
+        const deleteReviewButton = document.getElementById('deleteReviewButton');
+        deleteReviewButton.addEventListener('click', function () {
+            const reviewName = document.getElementById('deleteReviewName').innerText;
+            console.log(`Deleted review by ${reviewName}`);
+            $('#deleteReviewModal').modal('hide');
+        });
+    </script>
+</body>
+
+</html>
