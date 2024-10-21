@@ -41,32 +41,32 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      const sessionId = localStorage.getItem('sessionId'); // 세션 ID 가져오기
+      // const sessionId = localStorage.getItem('sessionId'); // 세션 ID 가져오기
   
-      if (!sessionId) {
-        console.warn('세션 ID가 존재하지 않습니다.');
-        return;
-      }
+      // if (!sessionId) {
+      //   console.warn('세션 ID가 존재하지 않습니다.');
+      //   return;
+      // }
   
-      // 로그아웃 요청
-      const response = await axios.post(
-        'http://localhost:3001/logout',
-        {},
-        {
-          headers: {
-            Authorization: sessionId, // 세션 ID를 헤더에 포함
-          },
-          withCredentials: true, // CORS 문제 해결을 위한 설정 (필요 시)
-        }
-      );
+      // // 로그아웃 요청
+      // const response = await axios.post(
+      //   'http://localhost:3001/logout',
+      //   {},
+      //   {
+      //     headers: {
+      //       Authorization: sessionId, // 세션 ID를 헤더에 포함
+      //     },
+      //     withCredentials: true, // CORS 문제 해결을 위한 설정 (필요 시)
+      //   }
+      // );
   
-      console.log(response.data.message); // 로그아웃 성공 메시지 출력
+      // console.log(response.data.message); // 로그아웃 성공 메시지 출력
   
       // 상태 초기화 및 로컬 스토리지 정리
       setIsLoggedIn(false);
       localStorage.removeItem('user');
-      localStorage.removeItem('sessionId');
-      navigate('/'); // 메인 페이지로 리다이렉트
+      // localStorage.removeItem('sessionId');
+      // navigate('/'); // 메인 페이지로 리다이렉트
     } catch (error) {
       console.error('Logout failed:', error);
     }

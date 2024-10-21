@@ -24,11 +24,7 @@ const MyPage = () => {
       const sessionId = localStorage.getItem('sessionId');
 
       try {
-        const response = await axios.get(`http://localhost:3001/mypage/userinfo`, {
-          headers: {
-            'x-session-id': sessionId,
-          },
-        });
+        const response = await axios.get(`http://localhost:3001/mypage/userinfo`);
         console.log(response.data);
 
         setUserId(response.data.userId)
