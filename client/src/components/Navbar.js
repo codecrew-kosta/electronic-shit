@@ -1,67 +1,67 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import axios from "axios"; // 서버로 요청을 보내기 위한 axios 사용
+import axios from "axios";
 import { GlobalContext } from "../GlobalContext";
 
 function Navbar() {
-  const { setCurrentPage } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
-  const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
+  const { setCurrentPage } = useContext(GlobalContext);
+  const [navbarSearchTerm, setNavbarSearchTerm] = useState("");
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
+  const navigate = useNavigate();
 
-  // 검색어 입력 핸들러
   const handleNavbarSearchChange = (event) => {
     setNavbarSearchTerm(event.target.value);
   };
 
   const handleNavbarSearchSubmit = (event) => {
     event.preventDefault();
-
-    // 검색어가 없거나 공백일 경우 검색을 하지 않음
     if (!navbarSearchTerm.trim()) {
       console.log("검색어가 입력되지 않았습니다.");
-      return; // 공백 또는 빈 문자열일 경우 검색 방지
+      return;
     }
-
-    const url = `http://localhost:3000/search?query=${encodeURIComponent(
-      navbarSearchTerm.trim() // 공백을 제거한 후 검색어로 사용
-    )}`;
-    window.location.href = url; // 페이지 이동
+    navigate(`/search?query=${encodeURIComponent(navbarSearchTerm.trim())}`);
   };
 
-  // 페이지 이동 시 페이지네이션 초기화 함수
   const handleNavLinkClick = (path) => {
     setCurrentPage(1);
   };
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인
-  const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태
-  const navigate = useNavigate();
+  const fetchItems = async () => {
+    if (isRequestInProgress) return;
+
+    setIsRequestInProgress(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/cart/?userId=lee345");
+      if (!response.ok) {
+        throw new Error("데이터를 가져오는 데 실패했습니다.");
+      }
+      const result = await response.json();
+      setCartItemCount(result.data.length); // 장바구니 아이템 수 업데이트
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    } finally {
+      setIsRequestInProgress(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (localStorage.getItem("user")) {
-          setIsLoggedIn(true);
-          setUsername(localStorage.getItem("user").username); // 사용자 이름을 받아와서 상태로 저장
-        } else {
-          const response = await axios.get(`http://localhost:3001/logout`);
-          setIsLoggedIn(false); // 상태 초기화
-          // navigate("/"); // 메인 페이지로 리다이렉트 // 검색을 누르면 계속 리다이렉트 돼서 지워뒀음 (2024-10-17 한채경)
-          console.log(response.data);
-        }
-      } catch (error) {
-        console.error("Logout failed:", error);
-      }
-    };
-
-    fetchData();
+    fetchItems(); // 컴포넌트가 마운트될 때 아이템 가져오기
   }, []);
 
   const handleLogout = async () => {
     const response = await axios.get(`http://localhost:3001/logout`);
-    setIsLoggedIn(false); // 상태 초기화
+    setIsLoggedIn(false);
     localStorage.removeItem("user");
-    navigate("/"); // 메인 페이지로 리다이렉트
+    navigate("/");
     console.log(response.data);
+  };
+
+  const handleCartClick = () => {
+    navigate("/myshopping");
   };
 
   return (
@@ -96,17 +96,6 @@ function Navbar() {
                 onClick={() => handleNavLinkClick("/")}
               >
                 Home
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/about"
-                onClick={() => handleNavLinkClick("/about")}
-              >
-                About
               </NavLink>
             </li>
             <li className="nav-item dropdown">
@@ -285,20 +274,21 @@ function Navbar() {
               placeholder="Search"
               aria-label="Search"
               value={navbarSearchTerm}
-              onChange={handleNavbarSearchChange} // 별도의 상태로 관리
+              onChange={handleNavbarSearchChange}
             />
             <button className="btn btn-outline-dark me-2" type="submit">
               <i className="bi-search"></i>
             </button>
           </form>
-          <form className="d-flex">
-            <button className="btn btn-outline-dark me-2" type="submit">
-              <i className="bi-cart-fill me-1"></i>Cart
-              <span className="badge bg-dark text-white ms-1 rounded-pill">
-                0
-              </span>
-            </button>
-          </form>
+          <button
+            className="btn btn-outline-dark me-2"
+            onClick={handleCartClick}
+          >
+            <i className="bi-cart-fill me-1"></i>Cart
+            <span className="badge bg-dark text-white ms-1 rounded-pill">
+              {cartItemCount} {/* 상태로 관리하는 카트 아이템 수 */}
+            </span>
+          </button>
           {isLoggedIn ? (
             <>
               <span className="navbar-text">환영합니다, {username} 님!</span>

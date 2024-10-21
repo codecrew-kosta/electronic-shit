@@ -16,8 +16,9 @@ function ProductDetail() {
   const { productList, setProductList } = useContext(GlobalContext);
 
   // 로딩 상태를 관리하는 state 추가
-
   const [loading, setLoading] = useState(true);
+  // 수량을 관리할 state 추가
+  const [quantity, setQuantity] = useState(1);
 
   const { no } = useParams(); // URL에서 id 값을 가져옴
 
@@ -51,6 +52,29 @@ function ProductDetail() {
     return <div>No products available.</div>;
   }
 
+  // 수량을 1 이상으로만 설정하도록 변경
+  const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (value >= 1) {
+      setQuantity(value);
+    }
+  };
+
+  // 장바구니에 아이템을 추가하는 함수
+  const addToCart = async () => {
+    const userNo = 3; // 임시로 userNo를 3으로 설정 (로그인 기능 구현 후 수정 필요)
+    try {
+      const response = await axios.post("http://localhost:3001/cart", {
+        userNo,
+        productNo: productList[0].productNo, // 현재 상품의 productNo 사용
+        quantity,
+      });
+      console.log("장바구니에 추가되었습니다:", response.data);
+    } catch (error) {
+      console.error("장바구니 추가 중 오류 발생:", error);
+    }
+  };
+
   return (
     <section className="py-5">
       <div className="container px-4 px-lg-5 my-5">
@@ -82,12 +106,15 @@ function ProductDetail() {
                 className="form-control text-center me-3"
                 id="inputQuantity"
                 type="number"
-                value="1"
+                value={quantity} // 상태값 사용
+                onChange={handleQuantityChange} // 값이 변경될 때 state 업데이트
                 style={{ maxWidth: "3rem" }}
+                min="1" // input 태그의 최소값 설정
               />
               <button
                 className="btn btn-outline-dark flex-shrink-0"
                 type="button"
+                onClick={addToCart} // 버튼 클릭 시 장바구니에 추가하는 함수 호출
               >
                 <i className="bi-cart-fill me-1"></i>
                 Add to cart

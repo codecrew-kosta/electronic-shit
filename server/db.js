@@ -28,4 +28,4 @@ const db = async (req, res, next) => {
   }
 };
 
-module.exports = {db, pool};
+module.exports = { db, pool };

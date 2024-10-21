@@ -30,8 +30,8 @@ const Dashboard = () => {
 
   return (
     <Container
-      className="d-flex justify-content-center align-items-center"
-      style={{ maxWidth: "1200px", height: "800px" }}
+      className="d-flex justify-content-center align-items-center mt-5"
+      style={{ maxWidth: "1200px" }}
     >
       <div className="dashboard-content w-100 d-flex">
         <div className="tab-container me-3">

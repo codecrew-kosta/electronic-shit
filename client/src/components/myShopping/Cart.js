@@ -5,10 +5,15 @@ import ItemList from "./ItemList";
 const Cart = () => {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
 
   const fetchItems = async () => {
+    if (isRequestInProgress) return; // 요청이 진행 중이면 무시
+
+    setIsRequestInProgress(true);
+
     try {
-      const response = await fetch("http://localhost:3001/cart/?userId=kim234");
+      const response = await fetch("http://localhost:3001/cart/?userId=lee345");
       if (!response.ok) {
         throw new Error("데이터를 가져오는 데 실패했습니다.");
       }
@@ -16,6 +21,8 @@ const Cart = () => {
       setItems(result.data);
     } catch (error) {
       console.error("Error fetching items:", error);
+    } finally {
+      setIsRequestInProgress(false); // 요청 완료 후 상태 초기화
     }
   };
 
@@ -34,6 +41,11 @@ const Cart = () => {
 
   // 수량 변경 처리 함수
   const handleQuantityChange = async (cartItemNo, newQuantity) => {
+    const parsedQuantity = parseInt(newQuantity, 10);
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+      console.error("유효하지 않은 수량입니다:", newQuantity);
+      return; // 유효하지 않은 수량이면 처리 중단
+    }
     try {
       // 백엔드에 수량 업데이트 요청
       await fetch(`http://localhost:3001/cart/${cartItemNo}`, {
@@ -52,6 +64,9 @@ const Cart = () => {
             : item
         )
       );
+
+      // 상품 목록 재페치
+      fetchItems(); // 추가된 부분
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
@@ -89,11 +104,13 @@ const Cart = () => {
   };
 
   // 전체 가격 계산 함수
-  const calculateTotalPrice = () => {
-    return items.reduce((total, item) => {
-      return total + item.price * item.quantity; // 가격 * 수량을 더함
-    }, 0);
-  };
+  function calculateTotalPrice(items) {
+    console.log(items); // 여기에 items의 값을 출력하여 확인
+    if (!Array.isArray(items)) {
+      return 0; // items가 배열이 아닐 경우 기본값 반환
+    }
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
+  }
 
   // 가격 포맷팅 함수
   const formatPrice = (price) => {
@@ -102,7 +119,7 @@ const Cart = () => {
 
   return (
     <Container className="mt-5">
-      <h2 className="text-center mb-4">장바구니</h2>
+      <h2 className="mb-4">장바구니</h2>
       <Row>
         <Col>
           <ItemList
@@ -114,7 +131,7 @@ const Cart = () => {
             handleQuantityChange={handleQuantityChange} // 수량 변경 처리 함수 전달
           />
           <div className="mt-4 text-end">
-            <h4>총 가격: {formatPrice(calculateTotalPrice())} 원</h4>
+            <h4>총 가격: {formatPrice(calculateTotalPrice(items))} 원</h4>
             <Button variant="dark">구매하기</Button>
           </div>
         </Col>
