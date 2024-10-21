@@ -1,4 +1,4 @@
-const { pool } = require("../cart_db");
+const { pool } = require("../db");
 
 // userId로 userNo를 가져오는 함수
 const getUserNoByUserId = async (db, userId) => {
@@ -72,6 +72,8 @@ const updateCartItemQuantity = async (cartItemNo, quantity) => {
       `UPDATE cart SET quantity = ? WHERE cartItemNo = ?`,
       [quantity, cartItemNo]
     );
+    // console.log(quantity, cartItemNo);
+
     return { cartItemNo, quantity };
   } finally {
     connection.release();

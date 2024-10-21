@@ -7,7 +7,7 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
-const db = require("./db");
+const { db, pool } = require("./db");
 
 const app = express();
 const authMiddleware = require("./middlewares/authMiddleware"); //20241014_조영우 로그인 및 회원가입 관련 라우터

@@ -4,7 +4,6 @@
 
 const express = require("express");
 const router = express.Router();
-const { cart_db } = require("../cart_db"); // 데이터베이스 연결 미들웨어
 const {
   getCartItems,
   addCartItem,
@@ -13,9 +12,6 @@ const {
   getUserNoByUserId,
   getAllCartItems,
 } = require("../controller/CartListController"); // CRUD 기능 컨트롤러에서 가져오기
-
-// 미들웨어 추가
-router.use(cart_db); // 모든 라우트에 cart_db 미들웨어 적용
 
 // 모든 유저의 장바구니 조회
 router.get("/all", async (req, res) => {
@@ -85,6 +81,10 @@ router.put("/:cartItemNo", async (req, res) => {
   const { cartItemNo } = req.params; // URL 파라미터에서 cartItemNo 가져오기
   const { quantity } = req.body; // 클라이언트로부터 받은 새로운 수량
 
+  // 수량 및 cartItemNo 로그로 확인
+  // console.log("Received cartItemNo:", cartItemNo);
+  // console.log("Received quantity:", quantity);
+
   // 수량 유효성 검사
   if (typeof quantity !== "number" || quantity < 1) {
     return res.status(400).json({
@@ -101,6 +101,7 @@ router.put("/:cartItemNo", async (req, res) => {
       message: "장바구니 아이템 개수가 수정되었습니다.",
     });
   } catch (error) {
+    console.error("Error updating item:", error); // 에러 로그 추가
     res.status(500).json({
       status: 500,
       message: error.message,

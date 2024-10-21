@@ -7,9 +7,32 @@ const ItemList = ({
   handleSelectItem,
   handleDeleteSelected,
   handleQuantityChange, // 수량 변경 처리 함수 추가
+  handleDelete,
 }) => {
+  // 전체 선택/해제 처리 함수
+  const handleSelectAll = () => {
+    if (selectedItems.length === items.length) {
+      // 모든 아이템이 선택된 상태이면 선택 해제
+      items.forEach((item) => handleSelectItem(item.cartItemNo)); // 각 아이템에 대해 선택 해제
+    } else {
+      // 모든 아이템을 선택
+      const allItemIds = items.map((item) => item.cartItemNo);
+      allItemIds.forEach((id) => handleSelectItem(id)); // 모든 아이템에 대해 선택
+    }
+  };
   return (
     <>
+      <Button className="mb-3 me-1" variant="dark" onClick={handleSelectAll}>
+        {selectedItems.length === items.length ? "전체 선택 해제" : "전체 선택"}
+      </Button>
+      <Button
+        variant="dark"
+        className="mb-3"
+        onClick={handleDeleteSelected}
+        disabled={selectedItems.length === 0}
+      >
+        선택된 아이템 삭제
+      </Button>
       <ListGroup>
         {items.map((item) => (
           <ListGroup.Item
@@ -40,20 +63,16 @@ const ItemList = ({
                 style={{ width: "60px", marginLeft: "1rem" }} // 스타일 조정
               />
             </div>
-            <Button variant="dark" className="ml-2">
+            <Button
+              variant="dark"
+              className="ml-2"
+              onClick={() => handleDelete(item.cartItemNo)}
+            >
               삭제
             </Button>
           </ListGroup.Item>
         ))}
       </ListGroup>
-      <Button
-        variant="dark"
-        className="mt-3"
-        onClick={handleDeleteSelected}
-        disabled={selectedItems.length === 0}
-      >
-        선택된 아이템 삭제
-      </Button>
     </>
   );
 };

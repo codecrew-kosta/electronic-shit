@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import ItemList from "./ItemList";
 
 const Cart = () => {
@@ -8,7 +8,7 @@ const Cart = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch("http://localhost:3001/cart/?userId=user1");
+      const response = await fetch("http://localhost:3001/cart/?userId=kim234");
       if (!response.ok) {
         throw new Error("데이터를 가져오는 데 실패했습니다.");
       }
@@ -57,6 +57,18 @@ const Cart = () => {
     }
   };
 
+  // 개별 아이템 삭제 함수
+  const handleDelete = async (cartItemNo) => {
+    try {
+      await fetch(`http://localhost:3001/cart/${cartItemNo}`, {
+        method: "DELETE",
+      });
+      setItems((prev) => prev.filter((item) => item.cartItemNo !== cartItemNo));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
   // 선택된 아이템 전체 삭제 함수
   const handleDeleteSelected = async () => {
     try {
@@ -76,6 +88,18 @@ const Cart = () => {
     }
   };
 
+  // 전체 가격 계산 함수
+  const calculateTotalPrice = () => {
+    return items.reduce((total, item) => {
+      return total + item.price * item.quantity; // 가격 * 수량을 더함
+    }, 0);
+  };
+
+  // 가격 포맷팅 함수
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <Container className="mt-5">
       <h2 className="text-center mb-4">장바구니</h2>
@@ -85,9 +109,14 @@ const Cart = () => {
             items={items}
             selectedItems={selectedItems}
             handleSelectItem={handleSelectItem}
+            handleDelete={handleDelete} // 개별 삭제 처리 함수 전달
             handleDeleteSelected={handleDeleteSelected}
             handleQuantityChange={handleQuantityChange} // 수량 변경 처리 함수 전달
           />
+          <div className="mt-4 text-end">
+            <h4>총 가격: {formatPrice(calculateTotalPrice())} 원</h4>
+            <Button variant="dark">구매하기</Button>
+          </div>
         </Col>
       </Row>
     </Container>
