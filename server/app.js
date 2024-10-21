@@ -48,9 +48,9 @@ app.use(express.json()); // 모든 서버의 통신은 json 으로 한다. res.s
 
 app.use(cookieParser()); // 쿠키 파서 적용 조영우 20241015 추가
 app.use(expressSession({
-    secret: 'my key',
-    resave: true,
-    saveUninitialized: true
+  secret: 'my key',
+  resave: true,
+  saveUninitialized: true
 }));
 
 /* 남윤호 구현 기능 시작 */
@@ -61,7 +61,7 @@ app.use("/product", NamApp);
 /* 조영우 구현 기능 시작 */
 /* 이곳에 조영우가 구현한 기능을 넣는다 */
 // app.use('/login', loginRouter);
-
+app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/logout", logoutRouter);
 app.use("/mypage", authMiddleware, mypageRouter);

@@ -5,7 +5,6 @@ import { GlobalContext } from "../GlobalContext";
 
 function Navbar() {
   const { setCurrentPage, isLoggedIn, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
-  const { setCurrentPage } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
   const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
 
   // 검색어 입력 핸들러
@@ -59,12 +58,12 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       // const sessionId = localStorage.getItem('sessionId'); // 세션 ID 가져오기
-  
+
       // if (!sessionId) {
       //   console.warn('세션 ID가 존재하지 않습니다.');
       //   return;
       // }
-  
+
       // // 로그아웃 요청
       // const response = await axios.post(
       //   'http://localhost:3001/logout',
@@ -76,9 +75,9 @@ function Navbar() {
       //     withCredentials: true, // CORS 문제 해결을 위한 설정 (필요 시)
       //   }
       // );
-  
+
       // console.log(response.data.message); // 로그아웃 성공 메시지 출력
-  
+
       // 상태 초기화 및 로컬 스토리지 정리
       setIsLoggedIn(false);
       localStorage.removeItem('user');
