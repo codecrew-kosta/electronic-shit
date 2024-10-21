@@ -13,9 +13,15 @@ router.get("/", async (req, res) => {
         //productsinfo: 주문된 상품의 정보가 들어있는 테이블. 전부다 조인해서 가져옴
         const Query = `
        SELECT
-           os.order_summary_id, os.order_summary_userNo, os.order_at, os.total_amount, -- 필요한 컬럼들만 명시적으로 선택
-            od.order_details_id, od.order_details_productNo, od.quantity,  -- 필요한 컬럼들만 명시적으로 선택
-            p.productNo, p.category, p.name, p.price  -- 필요한 상품 정보만 명시적으로 선택
+            os.order_summary_id,  -- 주문 번호
+            os.order_summary_userNo,  -- 유저 ID
+            os.total_amount, -- 총 주문금액
+            od.order_details_productNo,  -- 상품 ID
+            od.quantity,  -- 주문한 상품 수량
+            p.name,  -- 상품 이름
+            p.price,  -- 상품 가격
+            od.order_details_price,  -- 주문 당시의 가격 (할인 적용 여부 반영)
+            od.order_details_total_price  -- 가격 * 수량 
         FROM
             order_summary os
         JOIN
@@ -24,7 +30,7 @@ router.get("/", async (req, res) => {
             productsinfo p ON od.order_details_productNo = p.productNo  -- 상세 주문과 상품 정보 조인
         WHERE
             os.order_summary_userNo = ?;  -- 특정 유저 ID로 필터링
-        `;
+        ;`;
 
 
 
