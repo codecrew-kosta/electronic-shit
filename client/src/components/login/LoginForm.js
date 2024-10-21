@@ -13,11 +13,12 @@ function LoginForm() {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     navigate("/");
-  //   }
-  // }, [isLoggedIn, navigate]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      // 로그인 상태에서만 navigate가 실행되도록 수정
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleLoginClick = async (e) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ function LoginForm() {
       console.log("로그인폼", isLoggedIn);
       // console.log(sessionId)
 
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error(error);
     }

@@ -13,11 +13,21 @@ function Navbar() {
   const { setCurrentPage, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
   const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
 
+  const [navname, setnavname] = useState("");
+
+  useEffect(() => {
+    // username이 변경될 때마다 setNavName 호출
+    setnavname(username);
+  }, [username, setnavname]);
+
+  //태현님이
   useEffect(() => {
     if (sessionUser) {
       setIsLogin(true)
+
     } else {
       setIsLogin(false);
+
     }
   }, [location, sessionUser]);
 
@@ -101,6 +111,7 @@ function Navbar() {
       setIsLoggedIn(false);
       localStorage.removeItem('user');
       sessionStorage.removeItem('user');
+      setnavname("");
       // localStorage.removeItem('sessionId');
       navigate('/'); // 메인 페이지로 리다이렉트
     } catch (error) {
@@ -345,7 +356,7 @@ function Navbar() {
           </form>
           {isLogin ? (
             <>
-              <span className="navbar-text">환영합니다, {username} 님!</span>
+              <span className="navbar-text">환영합니다, {navname} 님!</span>
               &nbsp;
               <button className="btn btn-outline-dark" onClick={() => navigate("/mypage")}>마이페이지</button>
               &nbsp;
