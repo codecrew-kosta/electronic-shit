@@ -43,6 +43,13 @@ https://transform.tools/html-to-jsx
 1. 검색 기능 (검색창 onchange로 수정 가능하게 변경, name/brand/category 별 검색 기능 추가(아마 select 사용할 것))
 2. 상품 누르면 서브페이지로 이동 기능 추가
 
+10월 18일
+1. 장바구니 CRUD 구현중
+
+10월 21일
+1. 장바구니 CRUD 임시 구현/테스트 완료, 로그인 된 userId와 연결하는 작업 필요
+2. 결제 버튼을 누르면 users의 point로 결제 후 주문 내역 페이지로 이동하는 로직 작업
+
 ## 남윤호 일정
 10월 14일 월
 1. 디비생성 aws상의 mysql로 채경님이 생성한 디비 생성함
