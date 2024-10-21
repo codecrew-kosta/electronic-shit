@@ -2,10 +2,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios"; // 서버로 요청을 보내기 위한 axios 사용
 import { GlobalContext } from "../GlobalContext";
-
+import { useLocation } from 'react-router-dom';
 function Navbar() {
-  const { setCurrentPage, isLoggedIn, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
+
+  //세션스토리지에서 값꺼내기 
+  const sessionUser = sessionStorage.getItem('user');
+  console.log(sessionUser);
+  let location = useLocation();
+  const [isLogin, setIsLogin] = useState(false)
+  const { setCurrentPage, setIsLoggedIn, username, setUsername } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
   const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
+  useEffect(() => {
+    if (sessionUser) {
+      setIsLogin(true)
+    }
+  }, [location, sessionUser])
+
+  console.log(location.pathname, "네브바",);
+
+  console.log("username", username);
+
 
   // 검색어 입력 핸들러
   const handleNavbarSearchChange = (event) => {
@@ -42,7 +58,7 @@ function Navbar() {
           setIsLoggedIn(true);
           setUsername(user.name); // 사용자 이름을 받아와서 상태로 저장
         } else {
-          await handleLogout();
+          // await handleLogout();
           // setIsLoggedIn(false); // 상태 초기화
           // // navigate('/'); // 메인 페이지로 리다이렉트ㄴ
           // console.log(response.data);
@@ -323,7 +339,7 @@ function Navbar() {
               </span>
             </button>
           </form>
-          {isLoggedIn ? (
+          {isLogin ? (
             <>
               <span className="navbar-text">환영합니다, {username} 님!</span>
               &nbsp;
