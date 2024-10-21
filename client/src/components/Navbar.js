@@ -2,61 +2,66 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios"; // 서버로 요청을 보내기 위한 axios 사용
 import { GlobalContext } from "../GlobalContext";
-import SearchForm from "./SearchForm";
 
 function Navbar() {
   const { setCurrentPage } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
+  const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
+
+  // 검색어 입력 핸들러
+  const handleNavbarSearchChange = (event) => {
+    setNavbarSearchTerm(event.target.value);
+  };
+
+  const handleNavbarSearchSubmit = (event) => {
+    event.preventDefault();
+
+    // 검색어가 없거나 공백일 경우 검색을 하지 않음
+    if (!navbarSearchTerm.trim()) {
+      console.log("검색어가 입력되지 않았습니다.");
+      return; // 공백 또는 빈 문자열일 경우 검색 방지
+    }
+
+    const url = `http://localhost:3000/search?query=${encodeURIComponent(
+      navbarSearchTerm.trim() // 공백을 제거한 후 검색어로 사용
+    )}`;
+    window.location.href = url; // 페이지 이동
+  };
 
   // 페이지 이동 시 페이지네이션 초기화 함수
   const handleNavLinkClick = (path) => {
     setCurrentPage(1);
   };
 
-  // const [csrfToken, setCsrfToken] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인
   const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태
   const navigate = useNavigate();
 
-  // // 서버에서 CSRF 토큰을 가져옴
-  // axios.get('http://localhost:3001/auth/csrf-token', { withCredentials: true })
-  //   .then((response) => setCsrfToken(response.data.csrfToken))
-  //   .catch((error) => console.error('Failed to fetch CSRF token:', error));
-
   useEffect(() => {
-    // 액세스 토큰 유효성 확인
-    const checkAccessToken = async () => {
+    const fetchData = async () => {
       try {
-        // 서버에 액세스 토큰 검증 요청
-        const response = await axios.get(
-          "http://localhost:3001/auth/validate-token",
-          {
-            withCredentials: true, // HTTP-Only 쿠키 포함
-          }
-        );
-
-        // 토큰이 유효한 경우, 서버에서 받은 사용자 이름을 상태로 설정
-        setIsLoggedIn(true);
-        setUsername(response.data.user.username); // 사용자 이름을 받아와서 상태로 저장
+        if (localStorage.getItem("user")) {
+          setIsLoggedIn(true);
+          setUsername(localStorage.getItem("user").username); // 사용자 이름을 받아와서 상태로 저장
+        } else {
+          const response = await axios.get(`http://localhost:3001/logout`);
+          setIsLoggedIn(false); // 상태 초기화
+          // navigate("/"); // 메인 페이지로 리다이렉트 // 검색을 누르면 계속 리다이렉트 돼서 지워뒀음 (2024-10-17 한채경)
+          console.log(response.data);
+        }
       } catch (error) {
-        setIsLoggedIn(false); // 토큰이 유효하지 않으면 로그인 상태 해제
+        console.error("Logout failed:", error);
       }
     };
 
-    checkAccessToken(); // 컴포넌트 마운트 시 토큰 검사
+    fetchData();
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:3001/auth/logout",
-        {},
-        { withCredentials: true } // 쿠키 포함
-      );
-      setIsLoggedIn(false); // 상태 초기화
-      navigate("/"); // 메인 페이지로 리다이렉트
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    const response = await axios.get(`http://localhost:3001/logout`);
+    setIsLoggedIn(false); // 상태 초기화
+    localStorage.removeItem("user");
+    navigate("/"); // 메인 페이지로 리다이렉트
+    console.log(response.data);
   };
 
   return (
@@ -167,9 +172,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/태블릿"
                     onClick={() => handleNavLinkClick("/category/태블릿")}
@@ -179,9 +183,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/스마트워치"
                     onClick={() => handleNavLinkClick("/category/스마트워치")}
@@ -191,9 +194,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/노트북"
                     onClick={() => handleNavLinkClick("/category/노트북")}
@@ -203,9 +205,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/헤드폰"
                     onClick={() => handleNavLinkClick("/category/헤드폰")}
@@ -215,9 +216,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/블루투스 스피커"
                     onClick={() =>
@@ -229,9 +229,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/전자책 리더기"
                     onClick={() =>
@@ -243,9 +242,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/디지털 카메라"
                     onClick={() =>
@@ -257,9 +255,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/게임 노트북"
                     onClick={() => handleNavLinkClick("/category/게임 노트북")}
@@ -269,9 +266,8 @@ function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    className={
-                      ({ isActive }) =>
-                        `dropdown-item ${isActive ? "active" : ""}` // 중복 방지
+                    className={({ isActive }) =>
+                      `dropdown-item ${isActive ? "active" : ""}`
                     }
                     to="/category/게임 콘솔"
                     onClick={() => handleNavLinkClick("/category/게임 콘솔")}
@@ -282,7 +278,19 @@ function Navbar() {
               </ul>
             </li>
           </ul>
-          <SearchForm />
+          <form className="d-flex" onSubmit={handleNavbarSearchSubmit}>
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              value={navbarSearchTerm}
+              onChange={handleNavbarSearchChange} // 별도의 상태로 관리
+            />
+            <button className="btn btn-outline-dark me-2" type="submit">
+              <i className="bi-search"></i>
+            </button>
+          </form>
           <form className="d-flex">
             <button className="btn btn-outline-dark me-2" type="submit">
               <i className="bi-cart-fill me-1"></i>Cart

@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
-import { login, getProtectedData } from '../../services/authService'; // authService.js 가져오기
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
+import axios from 'axios';
+import { GlobalContext } from '../../GlobalContext';
+
 
 
 function LoginForm() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
+  const { username, setUsername } = useContext(GlobalContext);
   const navigate = useNavigate();
-  const handleLoginClick = async () => {
+  const handleLoginClick = async (e) => {
+    e.preventDefault();
     try {
-      const response = await login(userId, password);
-      localStorage.setItem("username", response.username); // 로그인 성공 시 username 저장
-      console.log(response);
-      navigate('/');
+      const response = await axios.post("http://localhost:3001/login", {
+        userId,
+        password,
+      });
+      // 사용자 정보와 로그인 상태를 Local Storage에 저장
+      localStorage.setItem("user", JSON.stringify(response.data));
+      setIsLoggedIn(true);
+      setUsername(response.data.username);
+      console.log(username)
+      navigate("/");
     } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed');
+      console.error(error);
     }
   };
-
-  // // 보호된 경로 접근
-  // const handleProtectedRequest = async () => {
-  //   try {
-  //     const data = await getProtectedData(accessToken, csrfToken);
-  //     console.log('Protected data:', data);
-  //   } catch (error) {
-  //     console.error('Protected request failed:', error);
-  //   }
-  // };
 
   return (<>
     {/* Login Form */}

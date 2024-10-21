@@ -26,6 +26,7 @@ import SearchResult from "./components/home/SearchResult";
 import ProductsCRUD from "./components/products/ProductsCRUD";
 import ReviewsCRUD from "./components/review/ReviewCRUD";
 import ImageTest from "./components/fileupload/ImageTest"
+import Dashboard from "./components/myShopping/Dashboard";
 
 function App() {
   return (
@@ -86,6 +87,7 @@ function App() {
           <Route path="/popular" element={<PopularProducts />}></Route>
           <Route path="/new" element={<NewProducts />}></Route>
           <Route path="/search" element={<SearchResult />} />
+          <Route path="/myshopping" element={<Dashboard />} />
           {/* ---------- */}
         </Routes>
       </BrowserRouter>

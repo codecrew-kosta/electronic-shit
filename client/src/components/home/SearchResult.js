@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import Pagination from "./Pagination";
 import { GlobalContext } from "../../GlobalContext";
-import SearchForm from "../SearchForm"; // SearchForm 컴포넌트 가져오기
+import SearchForm from "./SearchForm";
 
 function SearchResult() {
   const {
@@ -13,18 +13,24 @@ function SearchResult() {
     setCurrentPage,
     loading,
     setLoading,
+    setSearchTerm,
   } = useContext(GlobalContext);
 
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get("query");
-  let itemsPerPage = 8;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("query"); // 한글 쿼리
+  const type = searchParams.get("type") || "all"; // type 파라미터 추가, 기본값 "all"
+  const itemsPerPage = 8;
 
   useEffect(() => {
+    if (query) {
+      setSearchTerm(query);
+    }
+
     const fetchProducts = async () => {
       setLoading(true);
       setProductList([]);
 
-      if (!query) {
+      if (!query.trim()) {
         console.error("유효하지 않은 검색어:", query);
         setLoading(false);
         return;
@@ -32,7 +38,7 @@ function SearchResult() {
 
       const url = `http://localhost:3001/search?query=${encodeURIComponent(
         query
-      )}`;
+      )}&type=${encodeURIComponent(type)}`;
 
       try {
         const response = await fetch(url, {
@@ -60,7 +66,11 @@ function SearchResult() {
     };
 
     fetchProducts();
-  }, [query]);
+  }, [query, type, setSearchTerm]);
+
+  const handleSearch = (newQuery, newType) => {
+    setSearchParams({ query: newQuery, type: newType });
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -71,14 +81,21 @@ function SearchResult() {
     setCurrentPage(pageNumber);
   };
 
+  const typeLabels = {
+    category: "카테고리",
+    name: "상품명",
+    brand: "브랜드",
+    all: "전체",
+  };
+
   return (
     <div className="category-products container py-5">
       <h2 className="mb-4">
-        {query} 키워드 검색 결과: {productList.length}건
+        {query} 키워드에 대한 {typeLabels[type] || "전체"} 검색 결과:{" "}
+        {productList.length}건
       </h2>
-
-      <SearchForm initialValue={query} />
-
+      <SearchForm initialValue={query} onSearch={handleSearch} />{" "}
+      {/* SearchForm 컴포넌트 사용 */}
       {loading ? (
         <p>Loading products...</p>
       ) : (
@@ -97,7 +114,6 @@ function SearchResult() {
           )}
         </div>
       )}
-
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}

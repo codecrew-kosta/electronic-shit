@@ -26,8 +26,6 @@ router.post('/', async (req, res) => {
       [username, userId, hashedPassword, phoneNumber, email]
     );
 
-    
-
     // 성공 응답
     res.status(200).json({ message: 'User registered successfully' });
   } catch (error) {

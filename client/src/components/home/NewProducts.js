@@ -1,5 +1,5 @@
 // components/NewProducts.js
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import Pagination from "./Pagination";
 import { GlobalContext } from "../../GlobalContext";
