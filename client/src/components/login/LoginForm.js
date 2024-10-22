@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
 import axios from 'axios';
 import { GlobalContext } from '../../GlobalContext';
@@ -10,24 +10,49 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
   const { username, setUsername } = useContext(GlobalContext);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      // 로그인 상태에서만 navigate가 실행되도록 수정
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
   const handleLoginClick = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/login", {
-        userId,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:3001/login",
+        { userId, password },
+        { withCredentials: true }  // 쿠키 및 세션 정보 포함
+
+      );
+      console.log(response);
+
+      // console.log(userId, username, userId, points);
+
+      // }, { withCredentials: true });
       // 사용자 정보와 로그인 상태를 Local Storage에 저장
-      localStorage.setItem("user", JSON.stringify(response.data));
-      setIsLoggedIn(true);
+      // const sessionId = response.data.sessionId; // 세션 ID 저장
+      // localStorage.setItem('sessionId', sessionId);
+      sessionStorage.setItem("user", JSON.stringify(response.data))
       setUsername(response.data.username);
-      console.log(username)
-      navigate("/");
+      // localStorage.setItem("user", JSON.stringify(response.data));
+      setIsLoggedIn(true);
+
+      console.log("로그인폼", isLoggedIn);
+      // console.log(sessionId)
+
+      // navigate("/");
     } catch (error) {
       console.error(error);
     }
   };
+
+
+
 
   return (<>
     {/* Login Form */}

@@ -2,16 +2,40 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { GlobalContext } from "../GlobalContext";
-
+import { useLocation } from "react-router-dom";
 function Navbar() {
-  const { setCurrentPage } = useContext(GlobalContext);
-  const [navbarSearchTerm, setNavbarSearchTerm] = useState("");
-  const [cartItemCount, setCartItemCount] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
+  //세션스토리지에서 값꺼내기
+  const sessionUser = sessionStorage.getItem("user");
+  console.log(sessionUser);
+  let location = useLocation();
+  const [isLogin, setIsLogin] = useState(false);
+  const { setCurrentPage, setIsLoggedIn, username, setUsername } =
+    useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
+  const [navbarSearchTerm, setNavbarSearchTerm] = useState(""); // Navbar 내에서만 사용할 검색어 상태
   const [isRequestInProgress, setIsRequestInProgress] = useState(false);
-  const navigate = useNavigate();
+  const [cartItemCount, setCartItemCount] = useState(1);
 
+  const [navname, setnavname] = useState("");
+
+  useEffect(() => {
+    // username이 변경될 때마다 setNavName 호출
+    setnavname(username);
+  }, [username, setnavname]);
+
+  //태현님이
+  useEffect(() => {
+    if (sessionUser) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [location, sessionUser]);
+
+  console.log(location.pathname, "네브바");
+
+  console.log("username", username);
+
+  // 검색어 입력 핸들러
   const handleNavbarSearchChange = (event) => {
     setNavbarSearchTerm(event.target.value);
   };
@@ -52,12 +76,62 @@ function Navbar() {
     fetchItems(); // 컴포넌트가 마운트될 때 아이템 가져오기
   }, []);
 
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const user = JSON.parse(localStorage.getItem("user")); // JSON 파싱
+  //       if (user) {
+  //         setIsLoggedIn(true);
+  //         setUsername(user.name); // 사용자 이름을 받아와서 상태로 저장
+  //       } else {
+  //         // await handleLogout();
+  //         // setIsLoggedIn(false); // 상태 초기화
+  //         // // navigate('/'); // 메인 페이지로 리다이렉트ㄴ
+  //         // console.log(response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Logout failed:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [navigate, setUsername, setIsLoggedIn]);
+
   const handleLogout = async () => {
-    const response = await axios.get(`http://localhost:3001/logout`);
-    setIsLoggedIn(false);
-    localStorage.removeItem("user");
-    navigate("/");
-    console.log(response.data);
+    try {
+      // const sessionId = localStorage.getItem('sessionId'); // 세션 ID 가져오기
+
+      // if (!sessionId) {
+      //   console.warn('세션 ID가 존재하지 않습니다.');
+      //   return;
+      // }
+
+      // // 로그아웃 요청
+      // const response = await axios.post(
+      //   'http://localhost:3001/logout',
+      //   {},
+      //   {
+      //     headers: {
+      //       Authorization: sessionId, // 세션 ID를 헤더에 포함
+      //     },
+      //     withCredentials: true, // CORS 문제 해결을 위한 설정 (필요 시)
+      //   }
+      // );
+
+      // console.log(response.data.message); // 로그아웃 성공 메시지 출력
+
+      // 상태 초기화 및 로컬 스토리지 정리
+      setIsLoggedIn(false);
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      setnavname("");
+      // localStorage.removeItem('sessionId');
+      navigate("/"); // 메인 페이지로 리다이렉트
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const handleCartClick = () => {
@@ -289,11 +363,16 @@ function Navbar() {
               {cartItemCount} {/* 상태로 관리하는 카트 아이템 수 */}
             </span>
           </button>
-          {isLoggedIn ? (
+          {isLogin ? (
             <>
-              <span className="navbar-text">환영합니다, {username} 님!</span>
+              <span className="navbar-text">환영합니다, {navname} 님!</span>
               &nbsp;
-              <button className="btn btn-outline-dark">마이페이지</button>
+              <button
+                className="btn btn-outline-dark"
+                onClick={() => navigate("/mypage")}
+              >
+                마이페이지
+              </button>
               &nbsp;
               <button className="btn btn-outline-dark" onClick={handleLogout}>
                 로그아웃

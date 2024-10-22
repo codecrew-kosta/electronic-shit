@@ -46,13 +46,25 @@ router.get("/", async (req, res) => {
     try {
         // SQL 쿼리: wishlist테이블에서 사용자 id로 된 product 데이터 join으로 가져옴
         // 다른곳에서 사용위해 var로 선언
-        const Query = `select p.* from wishlist w
-        join productsinfo p on w.wishlist_productNo = p.productNo
-        where w.wishlist_userNo = ?
+        const Query = `
+        SELECT
+            w.*, p.*
+        FROM
+            wishlist w
+        JOIN
+            productsinfo p
+        ON
+            w.wishlist_productNo = p.productNo
+        WHERE
+            w.wishlist_userNo = ?;
+
         ;`;
 
         // DB에서 쿼리 실행
         const [rows] = await req.db.execute(Query, [user_id]);
+        console.log("쿼리실행됨");
+        console.log(rows);
+
 
         // 결과가 있는지 확인
         if (rows.length > 0) {

@@ -15,25 +15,46 @@ router.route("/").post(async (req, res) => {
         const [user] = await connection.execute('SELECT * FROM users WHERE userId = ?', [userId]);
         if (user.length < 1) {
             return res.status(400).json({ message: 'User ID does not exists' });
-        }
-        console.log(user[0].username);
-        // 비밀번호 암호화
-        const isPasswordValid = await argon2.verify(user[0].password, password);
+        } else {
 
+            console.log(user);
+        }
+
+        // 비밀번호 암호화 된거 비교
+        const isPasswordValid = await argon2.verify(user[0].password, password);
+        console.log(isPasswordValid);
+
+        //통과됨
         if (!isPasswordValid) {
             // 비밀번호가 일치하지 않으면 잘못된 자격 증명임을 반환함.
             return res.status(401).json({ message: 'Invalid credentials' });
+        } else {
+            console.log("비번 통과됨");
+            //세션에다가 올리기
+
+            //유저의 모든 정보를 반환처리한후, 프론트 단에서 세션에 넣어준다.
+            let { userNo, username, userId, points } = user[0];
+            return res.status(200).json({ userNo: userNo, username: username, userId: userId, points: points });
+            // req.session.userInfo = user[0];
+            // req.sessionStore
+
+            return res.status(200).json({ message: '세션을 설정했습니다.' });
         }
 
-        req.session.user = {
-            id: userId,
-            username: user[0].username,
-            authorized: true
-        }
+        res.status(200).json({
+            status: 200,
+            message: '로그인 되었음, 세션에 유저정보 저장함'
+        });
 
-        console.log("POST - /session/login 처리");
-        res.status(200).json(req.session.user);
-        // 로그인 성공 후 상품페이지로 이동하는 링크 추가
+        // //이친구 뭐임?
+        // req.session.user = {
+        //     id: userId,
+        //     name: user[0].username,
+        //     authorized: true
+        // }
+        // console.log(req.session.user);
+
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: `Unknown Server Error: ${error}` });
@@ -41,5 +62,4 @@ router.route("/").post(async (req, res) => {
         connection.release();
     }
 });
-
 module.exports = router;

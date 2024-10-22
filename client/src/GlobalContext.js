@@ -5,7 +5,7 @@
  * 꺼내다 쓰는거는 /products/ProductsDetail.js 참고하셈
  */
 
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 // Context 생성
 export const GlobalContext = createContext();
@@ -60,8 +60,17 @@ export const GlobalProvider = ({ children }) => {
   });
 
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인 조영우 추가
-    const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태 조영우 추가
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인 조영우 추가
+  // const [isLoggedIn, setIsLoggedIn] = useState("false"); // 로그인 상태 확인 조영우 추가
+  console.log(isLoggedIn, "전역");
+
+  //바로 바로 반영되게
+  useEffect(() => {
+    console.log("로그인 상태 변경:", isLoggedIn);
+  }, [isLoggedIn]);  // isLoggedIn이 변경될 때마다 이 부분이 실행됨
+
+
+  const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태 조영우 추가
 
   return (
     <GlobalContext.Provider
@@ -74,8 +83,8 @@ export const GlobalProvider = ({ children }) => {
         setProduct,
         review,
         setReview,
-            isLoggedIn, setIsLoggedIn,
-            username, setUsername,
+        isLoggedIn, setIsLoggedIn,
+        username, setUsername,
         currentPage,
         setCurrentPage,
         loading,

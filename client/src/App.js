@@ -22,11 +22,14 @@ import CategoryProducts from "./components/home/CategoryProducts"; // 10-16 한�
 import PopularProducts from "./components/home/PopularProducts"; // 10-16 한채경 추가
 import NewProducts from "./components/home/NewProducts"; // 10-16 한채경 추가
 import SearchResult from "./components/home/SearchResult";
+import MyPage from "./components/mypage/MyPage";
 
-import ProductsCRUD from "./components/products/ProductsCRUD";
+
 import ReviewsCRUD from "./components/review/ReviewCRUD";
 import ImageTest from "./components/fileupload/ImageTest"
 import Dashboard from "./components/myShopping/Dashboard";
+
+import ProductCRUD from "./components/productCRUD/productCRUD";
 
 function App() {
   return (
@@ -54,10 +57,10 @@ function App() {
           />
           {/* 2024.10.16_남윤호_상품관리 CRUD */}
           <Route
-            path="/productsCRUD"
+            path="/productCRUD"
             element={
               <>
-                <ProductsCRUD />
+                <ProductCRUD />
               </>
             }
           />
@@ -89,6 +92,7 @@ function App() {
           <Route path="/search" element={<SearchResult />} />
           <Route path="/myshopping" element={<Dashboard />} />
           {/* ---------- */}
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </BrowserRouter>
     </GlobalProvider>
