@@ -63,6 +63,8 @@ const Cart = () => {
         method: "DELETE",
       });
       setItems((prev) => prev.filter((item) => item.cartItemNo !== cartItemNo));
+      // 상품 목록 재페치
+      fetchItems(); // 추가된 부분
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -82,6 +84,8 @@ const Cart = () => {
         prev.filter((item) => !selectedItems.includes(item.cartItemNo))
       );
       setSelectedItems([]);
+      // 상품 목록 재페치
+      fetchItems(); // 추가된 부분
     } catch (error) {
       console.error("Error deleting items:", error);
     }
