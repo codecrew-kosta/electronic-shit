@@ -10,10 +10,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../GlobalContext";
 import axios from "axios";
-import { useParams } from "react-router-dom"; // useParams 사용
+import { useParams, useNavigate } from "react-router-dom"; // useParams 사용
 
 function ProductDetail() {
-  const { productList, setProductList } = useContext(GlobalContext);
+  //세션스토리지에서 값꺼내기
+  const sessionUser = sessionStorage.getItem("user");
+  const userNo = sessionUser ? JSON.parse(sessionUser).userNo : null; // 세션 스토리지에 user 데이터가 없을 시 임시로 userNo를 3으로 설정 (로그인 기능 구현 후 수정 필요)
+  const { productList, setProductList, fetchItems } = useContext(GlobalContext);
+  const navigate = useNavigate(); // 페이지 이동을 위한 훅 사용
 
   // 로딩 상태를 관리하는 state 추가
   const [loading, setLoading] = useState(true);
@@ -26,7 +30,7 @@ function ProductDetail() {
   async function getdata() {
     try {
       const { data } = await axios.get(`http://localhost:3001/product/${no}`);
-      console.log(data); // 데이터를 로그로 출력
+      // console.log(data); // 데이터를 로그로 출력
       setProductList(data); // 가져온 데이터를 상태로 설정
     } catch (error) {
       console.error("오류 발생:", error);
@@ -62,7 +66,12 @@ function ProductDetail() {
 
   // 장바구니에 아이템을 추가하는 함수
   const addToCart = async () => {
-    const userNo = 3; // 임시로 userNo를 3으로 설정 (로그인 기능 구현 후 수정 필요)
+    // const userNo = 3; // 임시로 userNo를 3으로 설정 (로그인 기능 구현 후 수정 필요)
+    if (!userNo) {
+      console.log("로그인 후 이용 가능합니다."); // 모달창 같은거 띄우면 좋을 듯
+      navigate("/login"); // 로그인 페이지로 리디렉션
+      return;
+    }
     try {
       const response = await axios.post("http://localhost:3001/cart", {
         userNo,
@@ -70,6 +79,7 @@ function ProductDetail() {
         quantity,
       });
       console.log("장바구니에 추가되었습니다:", response.data);
+      fetchItems();
     } catch (error) {
       console.error("장바구니 추가 중 오류 발생:", error);
     }

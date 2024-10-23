@@ -27,6 +27,37 @@ export const GlobalProvider = ({ children }) => {
   // 검색어 스테이트 (10-16 한채경 추가)
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Navbar 카트 아이템 개수 관리 스테이트 (10-23 한채경 추가)
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [items, setItems] = useState([]);
+
+  const sessionUser = sessionStorage.getItem("user");
+  const userId = sessionUser ? JSON.parse(sessionUser).userId : null;
+
+  const fetchItems = async () => {
+    if (!sessionUser) {
+      setCartItemCount(0);
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:3001/cart/?userId=${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch cart items.");
+      }
+      const result = await response.json();
+      setItems(result.data);
+      setCartItemCount(result.data.length); // 장바구니 아이템 수 업데이트
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, [userId]);
+
   // 20241018_남윤호_이미지url 스테이트
   const [imgUrl, setImgUrl] = useState("");
 
@@ -59,16 +90,14 @@ export const GlobalProvider = ({ children }) => {
     productId: 0,
   });
 
-
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 확인 조영우 추가
   // const [isLoggedIn, setIsLoggedIn] = useState("false"); // 로그인 상태 확인 조영우 추가
-  console.log(isLoggedIn, "전역");
+  // console.log(isLoggedIn, "전역");
 
   //바로 바로 반영되게
   useEffect(() => {
     console.log("로그인 상태 변경:", isLoggedIn);
-  }, [isLoggedIn]);  // isLoggedIn이 변경될 때마다 이 부분이 실행됨
-
+  }, [isLoggedIn]); // isLoggedIn이 변경될 때마다 이 부분이 실행됨
 
   const [username, setUsername] = useState(""); // 로그인된 사용자 이름을 저장하는 상태 조영우 추가
 
@@ -83,15 +112,23 @@ export const GlobalProvider = ({ children }) => {
         setProduct,
         review,
         setReview,
-        isLoggedIn, setIsLoggedIn,
-        username, setUsername,
+        isLoggedIn,
+        setIsLoggedIn,
+        username,
+        setUsername,
         currentPage,
         setCurrentPage,
         loading,
         setLoading,
         searchTerm,
         setSearchTerm,
-        imgUrl, setImgUrl
+        imgUrl,
+        setImgUrl,
+        cartItemCount,
+        setCartItemCount,
+        items,
+        setItems,
+        fetchItems,
       }}
     >
       {children}

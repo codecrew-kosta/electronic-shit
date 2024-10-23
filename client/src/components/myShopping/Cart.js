@@ -1,30 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
+import { GlobalContext } from "../../GlobalContext";
 import ItemList from "./ItemList";
 
 const Cart = () => {
-  const [items, setItems] = useState([]);
+  //세션스토리지에서 값꺼내기
+  const sessionUser = sessionStorage.getItem("user");
+  const userId = sessionUser ? JSON.parse(sessionUser).userId : null; // 세션 스토리지에 user가 없으면 임시로 lee345를 집어넣음
+  const { items, setItems, fetchItems } = useContext(GlobalContext); // 상태 초기화 함수와 페이지네이션 스테이트 가져오기
   const [selectedItems, setSelectedItems] = useState([]);
-  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
-
-  const fetchItems = async () => {
-    if (isRequestInProgress) return; // 요청이 진행 중이면 무시
-
-    setIsRequestInProgress(true);
-
-    try {
-      const response = await fetch("http://localhost:3001/cart/?userId=lee345");
-      if (!response.ok) {
-        throw new Error("데이터를 가져오는 데 실패했습니다.");
-      }
-      const result = await response.json();
-      setItems(result.data);
-    } catch (error) {
-      console.error("Error fetching items:", error);
-    } finally {
-      setIsRequestInProgress(false); // 요청 완료 후 상태 초기화
-    }
-  };
 
   useEffect(() => {
     fetchItems();
@@ -119,7 +103,7 @@ const Cart = () => {
 
   return (
     <Container className="mt-5">
-      <h2 className="mb-4">장바구니</h2>
+      <h2 className="text-center mb-4">장바구니</h2>
       <Row>
         <Col>
           <ItemList

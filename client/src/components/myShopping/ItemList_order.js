@@ -9,17 +9,22 @@ const ItemList = ({
   handleQuantityChange, // 수량 변경 처리 함수 추가
   handleDelete,
 }) => {
-  // 전체 선택/해제 처리 함수
-  const handleSelectAll = () => {
-    if (selectedItems.length === items.length) {
-      // 모든 아이템이 선택된 상태이면 선택 해제
-      items.forEach((item) => handleSelectItem(item.cartItemNo)); // 각 아이템에 대해 선택 해제
-    } else {
-      // 모든 아이템을 선택
-      const allItemIds = items.map((item) => item.cartItemNo);
-      allItemIds.forEach((id) => handleSelectItem(id)); // 모든 아이템에 대해 선택
-    }
-  };
+// 전체 선택/해제 처리 함수
+const handleSelectAll = () => {
+  const allItemIds = items.map((item) => item.cartItemNo); // 모든 아이템 ID 가져오기
+
+  // 모든 아이템이 선택된 상태이면 선택 해제
+  if (selectedItems.length === items.length) {
+    items.forEach((item) => handleSelectItem(item.cartItemNo)); // 각 아이템에 대해 선택 해제
+  } else {
+    // 선택되지 않은 아이템만 선택
+    allItemIds.forEach((id) => {
+      if (!selectedItems.includes(id)) {
+        handleSelectItem(id); // 선택되지 않은 아이템만 선택
+      }
+    });
+  }
+};
   return (
     <>
       <Button className="mb-3 me-1" variant="dark" onClick={handleSelectAll}>

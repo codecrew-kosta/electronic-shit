@@ -33,9 +33,6 @@ const getCartItems = async (db, userNo) => {
 
   const params = [userNo];
 
-  console.log("Generated SQL Query:", query);
-  console.log("Query Params:", params);
-
   const [rows] = await db.query(query, params);
 
   // 특정 상품이 존재하면 첫 번째 행을 반환, 없으면 null 반환

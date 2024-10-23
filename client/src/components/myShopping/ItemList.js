@@ -11,68 +11,91 @@ const ItemList = ({
 }) => {
   // 전체 선택/해제 처리 함수
   const handleSelectAll = () => {
+    const allItemIds = items.map((item) => item.cartItemNo); // 모든 아이템 ID 가져오기
+
+    // 모든 아이템이 선택된 상태이면 선택 해제
     if (selectedItems.length === items.length) {
-      // 모든 아이템이 선택된 상태이면 선택 해제
       items.forEach((item) => handleSelectItem(item.cartItemNo)); // 각 아이템에 대해 선택 해제
     } else {
-      // 모든 아이템을 선택
-      const allItemIds = items.map((item) => item.cartItemNo);
-      allItemIds.forEach((id) => handleSelectItem(id)); // 모든 아이템에 대해 선택
+      // 선택되지 않은 아이템만 선택
+      allItemIds.forEach((id) => {
+        if (!selectedItems.includes(id)) {
+          handleSelectItem(id); // 선택되지 않은 아이템만 선택
+        }
+      });
     }
   };
+
   return (
     <>
-      <Button className="mb-3 me-1" variant="dark" onClick={handleSelectAll}>
-        {selectedItems.length === items.length ? "전체 선택 해제" : "전체 선택"}
-      </Button>
-      <Button
-        variant="dark"
-        className="mb-3"
-        onClick={handleDeleteSelected}
-        disabled={selectedItems.length === 0}
-      >
-        선택된 아이템 삭제
-      </Button>
-      <ListGroup>
-        {items.map((item) => (
-          <ListGroup.Item
-            key={item.cartItemNo}
-            className="d-flex justify-content-between align-items-center"
+      {/* 아이템이 있을 때만 전체 선택/해제 버튼과 삭제 버튼 표시 */}
+      {items.length > 0 && (
+        <>
+          <Button
+            className="mb-3 me-1"
+            variant="dark"
+            onClick={handleSelectAll}
           >
-            <div className="d-flex align-items-center">
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.cartItemNo)}
-                onChange={() => handleSelectItem(item.cartItemNo)}
-                id={`checkbox-${item.cartItemNo}`} // 고유한 ID 추가
-                style={{ marginRight: "0.5rem" }} // 체크박스와 라벨 간격
-              />
-              <label
-                htmlFor={`checkbox-${item.cartItemNo}`} // 클릭 시 체크박스 선택
-                style={{ cursor: "pointer", marginBottom: 0 }} // 포인터 커서 추가
-              >
-                제품: {item.productName}
-              </label>
-              <input
-                type="number"
-                value={item.quantity} // 현재 수량 표시
-                min="1" // 최소값 1
-                onChange={
-                  (e) => handleQuantityChange(item.cartItemNo, e.target.value) // 수량 변경 시 호출
-                }
-                style={{ width: "60px", marginLeft: "1rem" }} // 스타일 조정
-              />
-            </div>
-            <Button
-              variant="dark"
-              className="ml-2"
-              onClick={() => handleDelete(item.cartItemNo)}
+            {selectedItems.length === items.length
+              ? "전체 선택 해제"
+              : "전체 선택"}
+          </Button>
+          <Button
+            variant="dark"
+            className="mb-3"
+            onClick={handleDeleteSelected}
+            disabled={selectedItems.length === 0}
+          >
+            선택된 아이템 삭제
+          </Button>
+        </>
+      )}
+
+      {/* 아이템이 없으면 메시지 출력 */}
+      {items.length === 0 ? (
+        <p>장바구니에 상품이 없습니다.</p>
+      ) : (
+        <ListGroup>
+          {items.map((item) => (
+            <ListGroup.Item
+              key={item.cartItemNo}
+              className="d-flex justify-content-between align-items-center"
             >
-              삭제
-            </Button>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+              <div className="d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.cartItemNo)}
+                  onChange={() => handleSelectItem(item.cartItemNo)}
+                  id={`checkbox-${item.cartItemNo}`} // 고유한 ID 추가
+                  style={{ marginRight: "0.5rem" }} // 체크박스와 라벨 간격
+                />
+                <label
+                  htmlFor={`checkbox-${item.cartItemNo}`} // 클릭 시 체크박스 선택
+                  style={{ cursor: "pointer", marginBottom: 0 }} // 포인터 커서 추가
+                >
+                  제품: {item.productName}
+                </label>
+                <input
+                  type="number"
+                  value={item.quantity} // 현재 수량 표시
+                  min="1" // 최소값 1
+                  onChange={(e) =>
+                    handleQuantityChange(item.cartItemNo, e.target.value)
+                  } // 수량 변경 시 호출
+                  style={{ width: "60px", marginLeft: "1rem" }} // 스타일 조정
+                />
+              </div>
+              <Button
+                variant="dark"
+                className="ml-2"
+                onClick={() => handleDelete(item.cartItemNo)}
+              >
+                삭제
+              </Button>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      )}
     </>
   );
 };
